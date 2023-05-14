@@ -1,4 +1,4 @@
-# Golang Clean Architecture RestAPI
+# Office Buddy Backend
 
 ## Prerequsites
 
