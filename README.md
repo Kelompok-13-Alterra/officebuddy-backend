@@ -1,4 +1,4 @@
-# Golang Clean Architecture RestAPI test revert
+# Office Buddy Backend test revert
 
 ## Prerequsites
 
