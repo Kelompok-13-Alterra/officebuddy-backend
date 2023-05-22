@@ -8,28 +8,31 @@ import (
 
 type User struct {
 	gorm.Model
-	Username string
+	Name     string
+	Email    string
 	Password string `json:"-"`
-	Nama     string
-	IsAdmin  bool
+	Role     int
+	IsVerify bool
 }
 
 type CreateUserParam struct {
-	Username string `binding:"required"`
+	Email    string `binding:"required"`
 	Password string `binding:"required"`
-	Nama     string `binding:"required"`
+	Name     string `binding:"required"`
 }
 
 type LoginUserParam struct {
-	Username string `binding:"required"`
+	Email    string `binding:"required"`
 	Password string `binding:"required"`
 }
 
 func (u *User) ConvertToAuthUser() auth.User {
 	return auth.User{
 		ID:       u.ID,
-		Username: u.Username,
+		Email:    u.Email,
 		Password: u.Password,
-		IsAdmin:  u.IsAdmin,
+		Name:     u.Name,
+		Role:     u.Role,
+		IsVerify: u.IsVerify,
 	}
 }

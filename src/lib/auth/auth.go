@@ -6,20 +6,20 @@ import (
 	"os"
 
 	"github.com/golang-jwt/jwt"
-	gonanoid "github.com/matoous/go-nanoid/v2"
 )
 
 type contextKey string
 
 const (
 	userAuthInfo contextKey = "UserAuthInfo"
+	RoleUser                = 0
+	RoleAdmin               = 1
 )
 
 type Interface interface {
 	SetUserAuthInfo(ctx context.Context, user User, token string) context.Context
 	GetUserAuthInfo(ctx context.Context) (UserAuthInfo, error)
 	GenerateToken(user User) (string, error)
-	GenerateGuestToken() (string, error)
 }
 
 type auth struct {
@@ -51,23 +51,9 @@ func (a *auth) GetUserAuthInfo(ctx context.Context) (UserAuthInfo, error) {
 func (a *auth) GenerateToken(user User) (string, error) {
 	claim := jwt.MapClaims{}
 	claim["id"] = user.ID
-	claim["is_admin"] = user.IsAdmin
-	claim["is_guest"] = false
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
-	signedToken, err := token.SignedString([]byte(os.Getenv("JWT_KEY")))
-	if err != nil {
-		return "", err
-	}
-
-	return signedToken, nil
-}
-
-func (a *auth) GenerateGuestToken() (string, error) {
-	claim := jwt.MapClaims{}
-	guestId, _ := gonanoid.New()
-	claim["guest_id"] = guestId
-	claim["is_guest"] = true
+	claim["email"] = user.Email
+	claim["is_verify"] = user.IsVerify
+	claim["role"] = user.Role
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
 	signedToken, err := token.SignedString([]byte(os.Getenv("JWT_KEY")))
