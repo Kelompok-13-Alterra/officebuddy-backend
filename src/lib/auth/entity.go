@@ -7,9 +7,9 @@ type UserAuthInfo struct {
 
 type User struct {
 	ID       uint
-	GuestId  string
-	Username string
+	Email    string
 	Password string
-	Nama     string
-	IsAdmin  bool
+	Name     string
+	Role     int
+	IsVerify bool
 }

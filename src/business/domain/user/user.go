@@ -8,7 +8,7 @@ import (
 
 type Interface interface {
 	Create(user entity.User) (entity.User, error)
-	GetByUsername(username string) (entity.User, error)
+	GetByEmail(email string) (entity.User, error)
 	GetById(id uint) (entity.User, error)
 }
 
@@ -32,10 +32,10 @@ func (a *user) Create(user entity.User) (entity.User, error) {
 	return user, nil
 }
 
-func (a *user) GetByUsername(username string) (entity.User, error) {
+func (a *user) GetByEmail(email string) (entity.User, error) {
 	user := entity.User{}
 
-	if err := a.db.Where("username = ?", username).First(&user).Error; err != nil {
+	if err := a.db.Where("email = ?", email).First(&user).Error; err != nil {
 		return user, err
 	}
 

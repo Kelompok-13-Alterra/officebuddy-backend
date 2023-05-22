@@ -31,8 +31,10 @@ func Init(ad userDom.Interface, auth auth.Interface) Interface {
 
 func (a *user) Create(params entity.CreateUserParam) (entity.User, error) {
 	user := entity.User{
-		Username: params.Username,
-		Nama:     params.Nama,
+		Email:    params.Email,
+		Name:     params.Name,
+		Role:     auth.RoleUser,
+		IsVerify: false,
 	}
 
 	hashPass, err := bcrypt.GenerateFromPassword([]byte(params.Password), bcrypt.MinCost)
@@ -60,7 +62,7 @@ func (a *user) GetById(id uint) (entity.User, error) {
 }
 
 func (a *user) Login(params entity.LoginUserParam) (string, error) {
-	user, err := a.user.GetByUsername(params.Username)
+	user, err := a.user.GetByEmail(params.Email)
 	if err != nil {
 		return "", err
 	}
