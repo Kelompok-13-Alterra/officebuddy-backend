@@ -6,11 +6,8 @@ import (
 
 type Notification struct {
 	gorm.Model
-	office_id	uint
-	user_id		uint
-	step		string
-	status		bool
+	OfficeID uint
+	UserID   uint
+	Step     string
+	Status   bool
 }
-
-
-
