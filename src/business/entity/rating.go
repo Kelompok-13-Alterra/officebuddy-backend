@@ -18,9 +18,3 @@ type RatingParam struct {
 	UserID   uint
 	OfficeID uint
 }
-
-type UpdateRatingParam struct {
-	Star        int
-	Tags        string
-	Description string
-}
