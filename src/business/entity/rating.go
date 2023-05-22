@@ -6,9 +6,9 @@ import (
 
 type Rating struct {
 	gorm.Model
-	UserID		uint
-	OfficeID	uint
-	Star		int
-	Tags		string
-	Description	string `gorm:"type:text"`
+	UserID      uint
+	OfficeID    uint
+	Star        int
+	Tags        string
+	Description string `gorm:"type:text"`
 }

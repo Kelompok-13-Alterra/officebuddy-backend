@@ -6,7 +6,7 @@ import (
 
 type ImageRating struct {
 	gorm.Model
-	UserID		uint
-	RatingID	uint
-	url			string
+	UserID   uint
+	RatingID uint
+	Url      string
 }
