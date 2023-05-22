@@ -14,5 +14,5 @@ type ImageRating struct {
 type ImageRatingParam struct {
 	ID       uint
 	UserID   uint
-	OfficeID uint
+	RatingID uint
 }
