@@ -12,3 +12,15 @@ type Rating struct {
 	Tags        string
 	Description string `gorm:"type:text"`
 }
+
+type RatingParam struct {
+	ID       uint
+	UserID   uint
+	OfficeID uint
+}
+
+type UpdateRatingParam struct {
+	Star        int
+	Tags        string
+	Description string
+}
