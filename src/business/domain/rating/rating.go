@@ -17,35 +17,35 @@ type rating struct {
 }
 
 func Init(db *gorm.DB) Interface {
-	t := &rating{
+	r := &rating{
 		db: db,
 	}
 
-	return t
+	return r
 }
 
-func (t *rating) Create(rating entity.Rating) (entity.Rating, error) {
-	if err := t.db.Create(&rating).Error; err != nil {
+func (r *rating) Create(rating entity.Rating) (entity.Rating, error) {
+	if err := r.db.Create(&rating).Error; err != nil {
 		return rating, err
 	}
 
 	return rating, nil
 }
 
-func (t *rating) GetList(param entity.RatingParam) ([]entity.Rating, error) {
+func (r *rating) GetList(param entity.RatingParam) ([]entity.Rating, error) {
 	ratings := []entity.Rating{}
 
-	if err := t.db.Where(param).Find(&ratings).Error; err != nil {
+	if err := r.db.Where(param).Find(&ratings).Error; err != nil {
 		return ratings, err
 	}
 
 	return ratings, nil
 }
 
-func (t *rating) Get(param entity.RatingParam) (entity.Rating, error) {
+func (r *rating) Get(param entity.RatingParam) (entity.Rating, error) {
 	rating := entity.Rating{}
 
-	if err := t.db.Where(param).First(&rating).Error; err != nil {
+	if err := r.db.Where(param).First(&rating).Error; err != nil {
 		return rating, err
 	}
 
