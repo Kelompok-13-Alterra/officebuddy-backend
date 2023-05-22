@@ -17,3 +17,15 @@ type Transaction struct {
 	End        time.Time
 	Status     bool
 }
+
+type TransactionParam struct {
+	ID       uint
+	UserID   uint
+	OfficeID uint
+}
+
+type UpdateTransactionParam struct {
+	Start  time.Time
+	End    time.Time
+	Status bool
+}
