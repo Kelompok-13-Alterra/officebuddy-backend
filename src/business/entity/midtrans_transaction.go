@@ -11,3 +11,13 @@ type MidtransTransaction struct {
 	Status        string
 	PaymentData   string
 }
+
+type MidtransTransactionParam struct {
+	ID            uint
+	TransactionID uint
+	MidtransID    string
+}
+
+type UpdateMidtransTransactionParam struct {
+	Status string
+}
