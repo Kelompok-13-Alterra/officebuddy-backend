@@ -18,3 +18,23 @@ type Office struct {
 	Facilities  string
 	Status      bool
 }
+type CreateOfficeParam struct {
+	Name        string
+	Description string
+	Location    string
+	Facilities  string
+}
+
+type OfficeParam struct {
+	Name		string
+	Location	string
+	Facilities	string
+	Price		int
+	Status		bool
+}
+
+type UpdateOfficeParam struct {
+	Open	time.Time
+	Close	time.Time
+	Status	bool
+}
