@@ -11,3 +11,9 @@ type Notification struct {
 	Step     string
 	Status   bool
 }
+
+type NotificationParam struct {
+	ID       uint
+	UserID   uint
+	OfficeID uint
+}

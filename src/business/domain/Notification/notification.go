@@ -6,12 +6,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type interface interface {
-	Create(notification entity.notification) (entity.notification, error)
-	GetList(param entity.notificationParam) ([]entity.notification, error)
-	Get(param entity.notificationParam) (entity.notification, error)
-	Update(selectParam entity.notificationParam, updateParam entity.UpdatenotificationParam) error
-	Delete(param entity.notificationParam) error
+type Interface interface {
+	Create(notification entity.Notification) (entity.Notification, error)
+	GetList(param entity.NotificationParam) ([]entity.Notification, error)
+	Get(param entity.NotificationParam) (entity.Notification, error)
+	Delete(param entity.NotificationParam) error
 }
 
 type notification struct {
@@ -54,18 +53,8 @@ func (t *notification) Get(param entity.notificationParam) (entity.notification,
 	return notification, nil
 }
 
-func (t *notification) Update(selectParam entity.notificationParam, updateParam entity.UpdatenotificationParam) error {
-	if err := t.db.Model(&selectParam).Updates(entity.notification{
-		Status: updateParam.Status,
-	}).Error; err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (t *notification) Delete(param entity.notificationParam) error {
-	if err := t.db.Where(param).Delete(&entity.notification{}).Error; err != nil {
+func (t *notification) Delete(param entity.NotificationParam) error {
+	if err := t.db.Where(param).Delete(&entity.Notification{}).Error; err != nil {
 		return err
 	}
 
