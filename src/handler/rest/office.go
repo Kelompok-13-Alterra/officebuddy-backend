@@ -15,11 +15,11 @@ func (r *rest) GetOfficeList(ctx *gin.Context) {
 		return
 	}
 
-	offices, err := r.uc.Office.GetList(officeParam)
+	item, err := r.uc.Office.GetList(officeParam)
 	if err != nil {
 		r.httpRespError(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
-	r.httpRespSuccess(ctx, http.StatusOK, "successfully get office list", offices)
+	r.httpRespSuccess(ctx, http.StatusCreated, "successfully get office list", item)
 }

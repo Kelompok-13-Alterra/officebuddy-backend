@@ -1,6 +1,7 @@
 package office
 
 import (
+	"fmt"
 	"go-clean/src/business/entity"
 
 	"gorm.io/gorm"
@@ -9,6 +10,7 @@ import (
 type Interface interface {
 	Create(office entity.Office) (entity.Office, error)
 	GetList(param entity.OfficeParam) ([]entity.Office, error)
+	GetListByLikeName(name string) ([]entity.Office, error)
 	Get(param entity.OfficeParam) (entity.Office, error)
 	Update(selectParam entity.OfficeParam, updateParam entity.UpdateOfficeParam) error
 	Delete(param entity.OfficeParam) error
@@ -38,6 +40,16 @@ func (o *office) GetList(param entity.OfficeParam) ([]entity.Office, error) {
 	offices := []entity.Office{}
 
 	if err := o.db.Where(param).Find(&offices).Error; err != nil {
+		return offices, err
+	}
+
+	return offices, nil
+}
+
+func (o *office) GetListByLikeName(name string) ([]entity.Office, error) {
+	offices := []entity.Office{}
+
+	if err := o.db.Where("name LIKE ?", fmt.Sprintf("%%%s%%", name)).Find(&offices).Error; err != nil {
 		return offices, err
 	}
 

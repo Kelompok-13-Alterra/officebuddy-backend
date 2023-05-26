@@ -21,8 +21,27 @@ func Init(od officeDom.Interface) Interface {
 	return o
 }
 
+// func (o *office) GetList(param entity.OfficeParam) ([]entity.Office, error) {
+// 	offices, err := o.office.GetList(param)
+// 	if err != nil {
+// 		return offices, err
+// 	}
+
+// 	return offices, nil
+// }
+
 func (o *office) GetList(param entity.OfficeParam) ([]entity.Office, error) {
-	offices, err := o.office.GetList(param)
+	var (
+		offices []entity.Office
+		err     error
+	)
+
+	if param.Name != "" {
+		offices, err = o.office.GetListByLikeName(param.Name)
+	} else {
+		offices, err = o.office.GetList(param)
+
+	}
 	if err != nil {
 		return offices, err
 	}

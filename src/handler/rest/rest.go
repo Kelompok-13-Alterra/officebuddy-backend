@@ -145,6 +145,9 @@ func (r *rest) Register() {
 	auth := v1.Group("/auth")
 	auth.POST("/register", r.RegisterUser)
 	auth.POST("/login", r.LoginUser)
+
+	office := v1.Group("/office")
+	office.GET("", r.VerifyUser, r.GetOfficeList)
 }
 
 func (r *rest) registerSwaggerRoutes() {
