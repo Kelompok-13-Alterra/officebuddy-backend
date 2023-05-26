@@ -25,7 +25,7 @@ func Init(db *gorm.DB) Interface {
 	return t
 }
 
-func (t *notification) Create(notification entity.notification) (entity.notification, error) {
+func (t *notification) Create(notification entity.Notification) (entity.Notification, error) {
 	if err := t.db.Create(&notification).Error; err != nil {
 		return notification, err
 	}
@@ -33,8 +33,8 @@ func (t *notification) Create(notification entity.notification) (entity.notifica
 	return notification, nil
 }
 
-func (t *notification) GetList(param entity.notificationParam) ([]entity.notification, error) {
-	notification := []entity.notification{}
+func (t *notification) GetList(param entity.NotificationParam) ([]entity.Notification, error) {
+	notification := []entity.Notification{}
 
 	if err := t.db.Where(param).Find(&notification).Error; err != nil {
 		return notification, err
@@ -43,8 +43,8 @@ func (t *notification) GetList(param entity.notificationParam) ([]entity.notific
 	return notification, nil
 }
 
-func (t *notification) Get(param entity.notificationParam) (entity.notification, error) {
-	notification := entity.notification{}
+func (t *notification) Get(param entity.NotificationParam) (entity.Notification, error) {
+	notification := entity.Notification{}
 
 	if err := t.db.Where(param).First(&notification).Error; err != nil {
 		return notification, err
