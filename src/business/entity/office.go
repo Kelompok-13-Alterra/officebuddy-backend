@@ -11,8 +11,8 @@ type Office struct {
 	Name        string
 	Description string `gorm:"type:text"`
 	Capacity    int
-	Open        time.Time
-	Close       time.Time
+	Open        time.Time `gorm:"type:time"`
+	Close       time.Time `gorm:"type:time"`
 	Price       int
 	Location    string
 	Facilities  string
