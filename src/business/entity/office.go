@@ -11,8 +11,8 @@ type Office struct {
 	Name        string
 	Description string `gorm:"type:text"`
 	Capacity    int
-	Open        time.Time
-	Close       time.Time
+	Open        time.Time `gorm:"type:time"`
+	Close       time.Time `gorm:"type:time"`
 	Price       int
 	Location    string
 	Facilities  string
@@ -26,15 +26,12 @@ type CreateOfficeParam struct {
 }
 
 type OfficeParam struct {
-	Name		string
-	Location	string
-	Facilities	string
-	Price		int
-	Status		bool
+	ID   uint   `uri:"office_id" json:"id"`
+	Name string `form:"name" json:"name"`
 }
 
 type UpdateOfficeParam struct {
-	Open	time.Time
-	Close	time.Time
-	Status	bool
+	Open   time.Time
+	Close  time.Time
+	Status bool
 }
