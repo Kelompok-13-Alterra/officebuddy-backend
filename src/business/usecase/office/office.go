@@ -7,6 +7,7 @@ import (
 
 type Interface interface {
 	GetList(param entity.OfficeParam) ([]entity.Office, error)
+	Get(param entity.OfficeParam) (entity.Office, error)
 }
 
 type office struct {
@@ -38,4 +39,13 @@ func (o *office) GetList(param entity.OfficeParam) ([]entity.Office, error) {
 	}
 
 	return offices, nil
+}
+
+func (o *office) Get(param entity.OfficeParam) (entity.Office, error) {
+	office, err := o.office.Get(param)
+	if err != nil {
+		return office, err
+	}
+
+	return office, nil
 }
