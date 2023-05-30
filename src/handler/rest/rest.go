@@ -149,6 +149,9 @@ func (r *rest) Register() {
 	office := v1.Group("/office")
 	office.GET("", r.VerifyUser, r.GetOfficeList)
 	office.GET("/:office_id", r.VerifyUser, r.GetOffice)
+
+	transaction := v1.Group("/transaction")
+	transaction.GET("/booked", r.VerifyUser, r.GetTransactionBookedList)
 }
 
 func (r *rest) registerSwaggerRoutes() {
