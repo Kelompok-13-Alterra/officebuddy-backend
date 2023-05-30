@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"go-clean/src/business/entity"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -19,18 +18,7 @@ import (
 // @Failure 500 {object} entity.Response{}
 // @Router /api/v1/transaction/booked [GET]
 func (r *rest) GetTransactionBookedList(ctx *gin.Context) {
-	var param entity.TransactionParam
-	if err := ctx.ShouldBindUri(&param); err != nil {
-		r.httpRespError(ctx, http.StatusBadRequest, err)
-		return
-	}
-
-	if err := ctx.ShouldBindQuery(&param); err != nil {
-		r.httpRespError(ctx, http.StatusBadRequest, err)
-		return
-	}
-
-	result, err := r.uc.Transaction.GetListBooked(ctx.Request.Context(), param)
+	result, err := r.uc.Transaction.GetListBooked(ctx.Request.Context())
 	if err != nil {
 		r.httpRespError(ctx, http.StatusInternalServerError, err)
 		return
