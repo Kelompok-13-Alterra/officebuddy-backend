@@ -24,7 +24,7 @@ env/data/
 go.work
 
 # Configuration File
-etc/cfg/config.json
+etc/cfg/*.json
 
 # Environment Variables
 .env
