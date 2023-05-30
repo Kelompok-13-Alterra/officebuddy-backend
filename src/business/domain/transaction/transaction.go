@@ -49,7 +49,7 @@ func (t *transaction) GetList(param entity.TransactionParam) ([]entity.Transacti
 func (t *transaction) GetListBooked(param entity.TransactionParam) ([]entity.Transaction, error) {
 	transactions := []entity.Transaction{}
 
-	if err := t.db.Where("start > ?", time.Now()).Find(&transactions).Error; err != nil {
+	if err := t.db.Where("start >= ? and user_id = ?", time.Now(), param.UserID).Find(&transactions).Error; err != nil {
 		return transactions, err
 	}
 

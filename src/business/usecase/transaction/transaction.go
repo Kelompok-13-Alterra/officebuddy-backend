@@ -8,7 +8,7 @@ import (
 )
 
 type Interface interface {
-	GetListBooked(ctx context.Context, param entity.TransactionParam) ([]entity.Transaction, error)
+	GetListBooked(ctx context.Context) ([]entity.Transaction, error)
 }
 
 type transaction struct {
@@ -25,7 +25,7 @@ func Init(od transactionDom.Interface, auth auth.Interface) Interface {
 	return t
 }
 
-func (t *transaction) GetListBooked(ctx context.Context, param entity.TransactionParam) ([]entity.Transaction, error) {
+func (t *transaction) GetListBooked(ctx context.Context) ([]entity.Transaction, error) {
 	var (
 		transactions []entity.Transaction
 		err          error
