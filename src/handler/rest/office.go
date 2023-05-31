@@ -2,7 +2,6 @@ package rest
 
 import (
 	"go-clean/src/business/entity"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -127,8 +126,6 @@ func (r *rest) UpdateOffice(ctx *gin.Context) {
 		r.httpRespError(ctx, http.StatusBadRequest, err)
 		return
 	}
-
-	log.Printf("%#v", updateParam)
 
 	err := r.uc.Office.Update(selectParam, updateParam)
 	if err != nil {
