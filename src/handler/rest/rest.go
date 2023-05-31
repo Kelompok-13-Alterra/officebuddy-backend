@@ -149,6 +149,10 @@ func (r *rest) Register() {
 	office := v1.Group("/office")
 	office.GET("", r.VerifyUser, r.GetOfficeList)
 	office.GET("/:office_id", r.VerifyUser, r.GetOffice)
+
+	notification := v1.Group("/notification")
+	notification.GET("", r.VerifyUser, r.GetNotificationList)
+
 }
 
 func (r *rest) registerSwaggerRoutes() {
