@@ -26,6 +26,12 @@ type LoginUserParam struct {
 	Password string `binding:"required"`
 }
 
+type UpdateUserParam struct {
+	Name     string
+	Email    string
+	Password string
+}
+
 func (u *User) ConvertToAuthUser() auth.User {
 	return auth.User{
 		ID:       u.ID,

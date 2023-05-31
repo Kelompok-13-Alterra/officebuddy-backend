@@ -10,6 +10,7 @@ type Interface interface {
 	Create(user entity.User) (entity.User, error)
 	GetByEmail(email string) (entity.User, error)
 	GetById(id uint) (entity.User, error)
+	Update(selectParam entity.UpdateUserParam, updateParam entity.UpdateUserParam) error
 }
 
 type user struct {
@@ -50,4 +51,16 @@ func (a *user) GetById(id uint) (entity.User, error) {
 	}
 
 	return user, nil
+}
+
+func (o *user) Update(selectParam entity.UpdateUserParam, updateParam entity.UpdateUserParam) error {
+	if err := o.db.Model(&selectParam).Updates(entity.User{
+		Name:     updateParam.Name,
+		Email:    updateParam.Email,
+		Password: updateParam.Password,
+	}).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
