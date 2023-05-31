@@ -67,9 +67,7 @@ func (o *office) Get(param entity.OfficeParam) (entity.Office, error) {
 }
 
 func (o *office) Update(selectParam entity.OfficeParam, updateParam entity.UpdateOfficeParam) error {
-	if err := o.db.Model(&selectParam).Updates(entity.Office{
-		Status: updateParam.Status,
-	}).Error; err != nil {
+	if err := o.db.Model(entity.Office{}).Where(selectParam).Updates(updateParam).Error; err != nil {
 		return err
 	}
 

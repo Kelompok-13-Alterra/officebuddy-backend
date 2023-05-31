@@ -78,7 +78,13 @@ type OfficeParam struct {
 }
 
 type UpdateOfficeParam struct {
-	Open   string
-	Close  string
-	Status bool
+	Name        string
+	Description string
+	Capacity    int
+	Open        string
+	Close       string
+	Location    string
+	Price       int
+	Facilities  string
+	Status      bool
 }

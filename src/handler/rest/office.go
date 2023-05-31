@@ -100,3 +100,38 @@ func (r *rest) GetOffice(ctx *gin.Context) {
 
 	r.httpRespSuccess(ctx, http.StatusOK, "successfull get office detail", office)
 }
+
+// @Summary Update Office
+// @Description Update a Office
+// @Security BearerAuth
+// @Tags Office
+// @Produce json
+// @Param office_id path integer true "office id"
+// @Param office body entity.UpdateOfficeParam true "office info"
+// @Success 200 {object} entity.Response{}
+// @Failure 400 {object} entity.Response{}
+// @Failure 401 {object} entity.Response{}
+// @Failure 404 {object} entity.Response{}
+// @Failure 500 {object} entity.Response{}
+// @Router /api/v1/office/{office_id} [PUT]
+func (r *rest) UpdateOffice(ctx *gin.Context) {
+	var updateParam entity.UpdateOfficeParam
+	if err := ctx.ShouldBindJSON(&updateParam); err != nil {
+		r.httpRespError(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	var selectParam entity.OfficeParam
+	if err := ctx.ShouldBindUri(&selectParam); err != nil {
+		r.httpRespError(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	err := r.uc.Office.Update(selectParam, updateParam)
+	if err != nil {
+		r.httpRespError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	r.httpRespSuccess(ctx, http.StatusOK, "successfully update office", nil)
+}

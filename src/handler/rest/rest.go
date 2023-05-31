@@ -150,6 +150,7 @@ func (r *rest) Register() {
 	office.POST("", r.VerifyUser, r.VerifyAdmin, r.CreateOffice)
 	office.GET("", r.VerifyUser, r.GetOfficeList)
 	office.GET("/:office_id", r.VerifyUser, r.GetOffice)
+	office.PUT("/:office_id", r.VerifyUser, r.VerifyAdmin, r.UpdateOffice)
 
 	transaction := v1.Group("/transaction")
 	transaction.GET("/booked", r.VerifyUser, r.GetTransactionBookedList)
