@@ -8,6 +8,43 @@ import (
 	"github.com/gin-gonic/gin/binding"
 )
 
+// @Summary Create Office
+// @Description Create new Office
+// @Security BearerAuth
+// @Tags Office
+// @Produce json
+// @Param office body entity.CreateOfficeParam true "office info"
+// @Param type query string true "type" Enums(office, coworking)
+// @Success 200 {object} entity.Response{data=entity.Office{}}
+// @Failure 400 {object} entity.Response{}
+// @Failure 401 {object} entity.Response{}
+// @Failure 404 {object} entity.Response{}
+// @Failure 500 {object} entity.Response{}
+// @Router /api/v1/office [POST]
+func (r *rest) CreateOffice(ctx *gin.Context) {
+	var inputParam entity.CreateOfficeParam
+	if err := ctx.ShouldBindJSON(&inputParam); err != nil {
+		r.httpRespError(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	var typeParam entity.OfficeTypeParam
+	if err := ctx.ShouldBindWith(&typeParam, binding.Query); err != nil {
+		r.httpRespError(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	inputParam.Type = typeParam.Type
+
+	office, err := r.uc.Office.Create(inputParam)
+	if err != nil {
+		r.httpRespError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	r.httpRespSuccess(ctx, http.StatusCreated, "successfully create new office", office)
+}
+
 // @Summary Get Office List
 // @Description Get Office List
 // @Security BearerAuth
@@ -33,7 +70,7 @@ func (r *rest) GetOfficeList(ctx *gin.Context) {
 		return
 	}
 
-	r.httpRespSuccess(ctx, http.StatusCreated, "successfully get office list", office)
+	r.httpRespSuccess(ctx, http.StatusOK, "successfully get office list", office)
 }
 
 // @Summary Get Office Detail
