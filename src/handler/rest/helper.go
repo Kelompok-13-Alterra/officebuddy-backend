@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"go-clean/src/business/entity"
+	"go-clean/src/lib/auth"
 	"net/http"
 	"os"
 
@@ -71,6 +72,21 @@ func (r *rest) VerifyUser(ctx *gin.Context) {
 	c := ctx.Request.Context()
 	c = r.auth.SetUserAuthInfo(c, user.ConvertToAuthUser(), tokenString)
 	ctx.Request = ctx.Request.WithContext(c)
+
+	ctx.Next()
+}
+
+func (r *rest) VerifyAdmin(ctx *gin.Context) {
+	user, err := r.auth.GetUserAuthInfo(ctx.Request.Context())
+	if err != nil {
+		r.httpRespError(ctx, http.StatusUnauthorized, err)
+		return
+	}
+
+	if user.User.Role != auth.RoleAdmin {
+		r.httpRespError(ctx, http.StatusUnauthorized, errors.New("dont have access"))
+		return
+	}
 
 	ctx.Next()
 }
