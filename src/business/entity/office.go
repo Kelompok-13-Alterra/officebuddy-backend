@@ -29,16 +29,31 @@ type OfficeHours struct {
 func (t *OfficeHours) Scan(value interface{}) error {
 	switch v := value.(type) {
 	case []byte:
-		return t.Time.UnmarshalText(v)
+		timeValue, err := time.Parse("15:04:05", string(v))
+		if err != nil {
+			return err
+		}
+		t.Time = timeValue
+		return nil
 	case string:
-		return t.Time.UnmarshalText([]byte(v))
+		timeValue, err := time.Parse("15:04:05", v)
+		if err != nil {
+			return err
+		}
+		t.Time = timeValue
+		return nil
 	default:
 		return errors.New("type not supported")
 	}
+
 }
 
 func (t OfficeHours) Value() (driver.Value, error) {
 	return t.Format("15:04:05"), nil
+}
+
+func (t OfficeHours) MarshalJSON() ([]byte, error) {
+	return []byte("\"" + t.Format("15:04:05") + "\""), nil
 }
 
 type CreateOfficeParam struct {
