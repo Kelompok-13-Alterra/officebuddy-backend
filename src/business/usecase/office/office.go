@@ -10,6 +10,7 @@ type Interface interface {
 	Create(param entity.CreateOfficeParam) (entity.Office, error)
 	GetList(param entity.OfficeParam) ([]entity.Office, error)
 	Get(param entity.OfficeParam) (entity.Office, error)
+	Update(param entity.OfficeParam, inputParam entity.UpdateOfficeParam) error
 }
 
 type office struct {
@@ -89,4 +90,12 @@ func (o *office) Get(param entity.OfficeParam) (entity.Office, error) {
 	}
 
 	return office, nil
+}
+
+func (o *office) Update(param entity.OfficeParam, inputParam entity.UpdateOfficeParam) error {
+	if err := o.office.Update(param, inputParam); err != nil {
+		return err
+	}
+
+	return nil
 }
