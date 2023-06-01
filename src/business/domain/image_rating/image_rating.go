@@ -1,4 +1,4 @@
-package imagerating
+package image_rating
 
 import (
 	"go-clean/src/business/entity"
