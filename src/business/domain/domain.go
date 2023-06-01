@@ -10,18 +10,18 @@ import (
 )
 
 type Domains struct {
-	User        user.Interface
-	Office      office.Interface
-	Transaction transaction.Interface
-  Notification notification.Interface
+	User         user.Interface
+	Office       office.Interface
+	Transaction  transaction.Interface
+	Notification notification.Interface
 }
 
 func Init(db *gorm.DB) *Domains {
 	d := &Domains{
-		User:        user.Init(db),
-		Office:      office.Init(db),
-		Transaction: transaction.Init(db),
-    Notification: notification.Init(db),
+		User:         user.Init(db),
+		Office:       office.Init(db),
+		Transaction:  transaction.Init(db),
+		Notification: notification.Init(db),
 	}
 
 	return d
