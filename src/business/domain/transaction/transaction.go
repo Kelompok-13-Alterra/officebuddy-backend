@@ -2,6 +2,7 @@ package transaction
 
 import (
 	"go-clean/src/business/entity"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -9,6 +10,7 @@ import (
 type Interface interface {
 	Create(transaction entity.Transaction) (entity.Transaction, error)
 	GetList(param entity.TransactionParam) ([]entity.Transaction, error)
+	GetListBooked(param entity.TransactionParam) ([]entity.Transaction, error)
 	Get(param entity.TransactionParam) (entity.Transaction, error)
 	Update(selectParam entity.TransactionParam, updateParam entity.UpdateTransactionParam) error
 	Delete(param entity.TransactionParam) error
@@ -38,6 +40,16 @@ func (t *transaction) GetList(param entity.TransactionParam) ([]entity.Transacti
 	transactions := []entity.Transaction{}
 
 	if err := t.db.Where(param).Find(&transactions).Error; err != nil {
+		return transactions, err
+	}
+
+	return transactions, nil
+}
+
+func (t *transaction) GetListBooked(param entity.TransactionParam) ([]entity.Transaction, error) {
+	transactions := []entity.Transaction{}
+
+	if err := t.db.Where("start >= ? and user_id = ?", time.Now(), param.UserID).Find(&transactions).Error; err != nil {
 		return transactions, err
 	}
 

@@ -21,7 +21,8 @@ import (
 // @name Authorization
 
 const (
-	configFile string = "./etc/cfg/config.json"
+	configFile       string = "./etc/cfg/config.json"
+	cloudStorageFile string = "./etc/cfg/officebuddy-388208-2a9032588b19.json"
 )
 
 func main() {

@@ -3,11 +3,14 @@ package office
 import (
 	officeDom "go-clean/src/business/domain/office"
 	"go-clean/src/business/entity"
+	"time"
 )
 
 type Interface interface {
+	Create(param entity.CreateOfficeParam) (entity.Office, error)
 	GetList(param entity.OfficeParam) ([]entity.Office, error)
 	Get(param entity.OfficeParam) (entity.Office, error)
+	Update(param entity.OfficeParam, inputParam entity.UpdateOfficeParam) error
 }
 
 type office struct {
@@ -20,6 +23,45 @@ func Init(od officeDom.Interface) Interface {
 	}
 
 	return o
+}
+
+func (o *office) Create(param entity.CreateOfficeParam) (entity.Office, error) {
+	office := entity.Office{}
+
+	openTime, err := o.convertStringToOfficeHours(param.Open)
+	if err != nil {
+		return office, err
+	}
+
+	closeTime, err := o.convertStringToOfficeHours(param.Close)
+	if err != nil {
+		return office, err
+	}
+
+	office, err = o.office.Create(entity.Office{
+		Name:        param.Name,
+		Description: param.Description,
+		Capacity:    param.Capacity,
+		Type:        param.Type,
+		Open:        openTime,
+		Close:       closeTime,
+		Location:    param.Location,
+		Price:       param.Price,
+		Facilities:  param.Facilities,
+	})
+	if err != nil {
+		return office, err
+	}
+
+	return office, nil
+}
+
+func (o *office) convertStringToOfficeHours(s string) (entity.OfficeHours, error) {
+	t, err := time.Parse("15:04:05", s)
+	if err != nil {
+		return entity.OfficeHours{}, err
+	}
+	return entity.OfficeHours{Time: t}, nil
 }
 
 func (o *office) GetList(param entity.OfficeParam) ([]entity.Office, error) {
@@ -48,4 +90,12 @@ func (o *office) Get(param entity.OfficeParam) (entity.Office, error) {
 	}
 
 	return office, nil
+}
+
+func (o *office) Update(param entity.OfficeParam, inputParam entity.UpdateOfficeParam) error {
+	if err := o.office.Update(param, inputParam); err != nil {
+		return err
+	}
+
+	return nil
 }

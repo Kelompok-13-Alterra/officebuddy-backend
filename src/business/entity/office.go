@@ -1,6 +1,8 @@
 package entity
 
 import (
+	"database/sql/driver"
+	"errors"
 	"time"
 
 	"gorm.io/gorm"
@@ -11,18 +13,63 @@ type Office struct {
 	Name        string
 	Description string `gorm:"type:text"`
 	Capacity    int
-	Open        time.Time `gorm:"type:time"`
-	Close       time.Time `gorm:"type:time"`
+	Type        string
+	Open        OfficeHours
+	Close       OfficeHours
 	Price       int
 	Location    string
 	Facilities  string
 	Status      bool
 }
+
+type OfficeHours struct {
+	time.Time
+}
+
+func (t *OfficeHours) Scan(value interface{}) error {
+	switch v := value.(type) {
+	case []byte:
+		timeValue, err := time.Parse("15:04:05", string(v))
+		if err != nil {
+			return err
+		}
+		t.Time = timeValue
+		return nil
+	case string:
+		timeValue, err := time.Parse("15:04:05", v)
+		if err != nil {
+			return err
+		}
+		t.Time = timeValue
+		return nil
+	default:
+		return errors.New("type not supported")
+	}
+
+}
+
+func (t OfficeHours) Value() (driver.Value, error) {
+	return t.Format("15:04:05"), nil
+}
+
+func (t OfficeHours) MarshalJSON() ([]byte, error) {
+	return []byte("\"" + t.Format("15:04:05") + "\""), nil
+}
+
 type CreateOfficeParam struct {
-	Name        string
-	Description string
-	Location    string
-	Facilities  string
+	Name        string `binding:"required"`
+	Description string `binding:"required"`
+	Capacity    int    `binding:"required"`
+	Type        string `json:"-"`
+	Open        string `binding:"required"`
+	Close       string `binding:"required"`
+	Location    string `binding:"required"`
+	Price       int    `binding:"required"`
+	Facilities  string `binding:"required"`
+}
+
+type OfficeTypeParam struct {
+	Type string `form:"type" binding:"required"`
 }
 
 type OfficeParam struct {
@@ -31,7 +78,13 @@ type OfficeParam struct {
 }
 
 type UpdateOfficeParam struct {
-	Open   time.Time
-	Close  time.Time
-	Status bool
+	Name        string
+	Description string
+	Capacity    int
+	Open        string
+	Close       string
+	Location    string
+	Price       int
+	Facilities  string
+	Status      bool
 }
