@@ -154,6 +154,9 @@ func (r *rest) Register() {
 
 	transaction := v1.Group("/transaction")
 	transaction.GET("/booked", r.VerifyUser, r.GetTransactionBookedList)
+  
+  notification := v1.Group("/notification")
+	notification.GET("", r.VerifyUser, r.GetNotificationList)
 }
 
 func (r *rest) registerSwaggerRoutes() {
