@@ -33,6 +33,11 @@ type UpdateTransactionParam struct {
 	Status bool
 }
 
+type InputUpdateTransactionParam struct {
+	Start string `binding:"required"`
+	End   string `binding:"required"`
+}
+
 type CreateTransactionParam struct {
 	OfficeID  uint   `json:"-" uri:"office_id"`
 	Start     string `binding:"required"`
