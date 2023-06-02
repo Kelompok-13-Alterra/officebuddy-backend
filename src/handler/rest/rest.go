@@ -145,6 +145,7 @@ func (r *rest) Register() {
 	auth := v1.Group("/auth")
 	auth.POST("/register", r.RegisterUser)
 	auth.POST("/login", r.LoginUser)
+	auth.POST("/admin-login", r.LoginAdmin)
 
 	office := v1.Group("/office")
 	office.POST("", r.VerifyUser, r.VerifyAdmin, r.CreateOffice)
