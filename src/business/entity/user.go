@@ -32,6 +32,10 @@ type UpdateUserParam struct {
 	Password string
 }
 
+type UserParam struct {
+	ID uint
+}
+
 func (u *User) ConvertToAuthUser() auth.User {
 	return auth.User{
 		ID:       u.ID,
