@@ -4,7 +4,7 @@ import (
 	"errors"
 	userDom "go-clean/src/business/domain/user"
 	"go-clean/src/business/entity"
-	"go-clean/src/lib/auth"
+	auth "go-clean/src/lib/auth"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -12,6 +12,7 @@ import (
 type Interface interface {
 	Create(params entity.CreateUserParam) (entity.User, error)
 	Login(params entity.LoginUserParam) (string, error)
+	LoginAdmin(params entity.LoginUserParam) (string, error)
 	GetById(id uint) (entity.User, error)
 }
 
@@ -68,6 +69,32 @@ func (a *user) Login(params entity.LoginUserParam) (string, error) {
 	}
 
 	if user.ID == 0 {
+		return "", errors.New("user tidak ditemukan atau password tidak sesuai")
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(params.Password)); err != nil {
+		return "", errors.New("user tidak ditemukan atau password tidak sesuai")
+	}
+
+	token, err := a.auth.GenerateToken(user.ConvertToAuthUser())
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
+}
+
+func (a *user) LoginAdmin(params entity.LoginUserParam) (string, error) {
+	user, err := a.user.GetByEmail(params.Email)
+	if err != nil {
+		return "", err
+	}
+
+	if user.ID == 0 {
+		return "", errors.New("user tidak ditemukan atau password tidak sesuai")
+	}
+
+	if user.Role != auth.RoleAdmin {
 		return "", errors.New("user tidak ditemukan atau password tidak sesuai")
 	}
 
