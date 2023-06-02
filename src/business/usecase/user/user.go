@@ -1,6 +1,7 @@
 package user
 
 import (
+	"context"
 	"errors"
 	userDom "go-clean/src/business/domain/user"
 	"go-clean/src/business/entity"
@@ -14,6 +15,7 @@ type Interface interface {
 	Login(params entity.LoginUserParam) (string, error)
 	LoginAdmin(params entity.LoginUserParam) (string, error)
 	GetById(id uint) (entity.User, error)
+	Update(ctx context.Context, inputParam entity.UpdateUserParam) error
 }
 
 type user struct {
@@ -108,4 +110,19 @@ func (a *user) LoginAdmin(params entity.LoginUserParam) (string, error) {
 	}
 
 	return token, nil
+}
+
+func (u *user) Update(ctx context.Context, inputParam entity.UpdateUserParam) error {
+	user, err := u.auth.GetUserAuthInfo(ctx)
+	if err != nil {
+		return err
+	}
+
+	if err := u.user.Update(entity.UpdateUserParam{
+		Email: user.User.Email,
+	}, inputParam); err != nil {
+		return err
+	}
+
+	return nil
 }
