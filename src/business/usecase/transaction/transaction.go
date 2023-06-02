@@ -20,6 +20,8 @@ import (
 type Interface interface {
 	Create(ctx context.Context, param entity.CreateTransactionParam) (uint, error)
 	GetListBooked(ctx context.Context) ([]entity.Transaction, error)
+	RescheduleBooked(ctx context.Context, param entity.InputUpdateTransactionParam, selectParam entity.TransactionParam) error
+	ValidateTransaction(ctx context.Context, transactionID uint, userID uint) error
 }
 
 type transaction struct {
@@ -191,4 +193,57 @@ func (t *transaction) GetListBooked(ctx context.Context) ([]entity.Transaction, 
 	}
 
 	return transactions, nil
+}
+
+func (t *transaction) RescheduleBooked(ctx context.Context, param entity.InputUpdateTransactionParam, selectParam entity.TransactionParam) error {
+	startDate, endDate, err := t.formatDate(param.Start, param.End)
+	if err != nil {
+		return err
+	}
+
+	transaction, err := t.transaction.Get(entity.TransactionParam{
+		ID: selectParam.ID,
+	})
+	if err != nil {
+		return err
+	}
+
+	transactionExist, err := t.transaction.GetAvaibility(entity.TransactionParam{
+		Start:    startDate,
+		End:      endDate,
+		OfficeID: transaction.OfficeID,
+	})
+	if err != nil {
+		return err
+	}
+
+	if transactionExist.ID != 0 {
+		return errors.New("tanggal tidak tersedia")
+	}
+
+	if err := t.transaction.Update(entity.TransactionParam{
+		ID: selectParam.ID,
+	}, entity.UpdateTransactionParam{
+		Start: startDate,
+		End:   endDate,
+	}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (t *transaction) ValidateTransaction(ctx context.Context, transactionID uint, userID uint) error {
+	transaction, err := t.transaction.Get(entity.TransactionParam{
+		ID: transactionID,
+	})
+	if err != nil {
+		return err
+	}
+
+	if transaction.UserID != userID {
+		return errors.New("unauthorized")
+	}
+
+	return nil
 }

@@ -78,9 +78,7 @@ func (t *transaction) Get(param entity.TransactionParam) (entity.Transaction, er
 }
 
 func (t *transaction) Update(selectParam entity.TransactionParam, updateParam entity.UpdateTransactionParam) error {
-	if err := t.db.Model(&selectParam).Updates(entity.Transaction{
-		Status: updateParam.Status,
-	}).Error; err != nil {
+	if err := t.db.Model(entity.Transaction{}).Where(selectParam).Updates(updateParam).Error; err != nil {
 		return err
 	}
 
