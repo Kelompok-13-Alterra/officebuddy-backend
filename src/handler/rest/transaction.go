@@ -81,7 +81,7 @@ func (r *rest) RescheduleBooked(ctx *gin.Context) {
 // @Security BearerAuth
 // @Tags Transaction
 // @Produce json
-// @Success 200 {object} entity.Response{data=entity.Transaction}
+// @Success 200 {object} entity.Response{data=[]entity.Transaction}
 // @Failure 400 {object} entity.Response{}
 // @Failure 401 {object} entity.Response{}
 // @Failure 404 {object} entity.Response{}
@@ -102,7 +102,7 @@ func (r *rest) GetTransactionBookedList(ctx *gin.Context) {
 // @Security BearerAuth
 // @Tags Transaction
 // @Produce json
-// @Success 200 {object} entity.Response{data=entity.Transaction}
+// @Success 200 {object} entity.Response{data=[]entity.Transaction}
 // @Failure 400 {object} entity.Response{}
 // @Failure 401 {object} entity.Response{}
 // @Failure 404 {object} entity.Response{}

@@ -88,6 +88,19 @@ func (r rest) LoginAdmin(ctx *gin.Context) {
 	r.httpRespSuccess(ctx, http.StatusOK, "successfully login", gin.H{"token": token})
 }
 
+// @Summary Update User
+// @Description Update a User
+// @Security BearerAuth
+// @Tags User
+// @Produce json
+// @Param user_id path integer true "user id"
+// @Param user body entity.UpdateUserParam true "user info"
+// @Success 200 {object} entity.Response{}
+// @Failure 400 {object} entity.Response{}
+// @Failure 401 {object} entity.Response{}
+// @Failure 404 {object} entity.Response{}
+// @Failure 500 {object} entity.Response{}
+// @Router /api/v1/user/edit [PUT]
 func (r *rest) UpdateUser(ctx *gin.Context) {
 	var updateParam entity.UpdateUserParam
 	if err := ctx.ShouldBindJSON(&updateParam); err != nil {
