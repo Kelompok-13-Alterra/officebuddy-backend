@@ -91,6 +91,27 @@ func (r *rest) VerifyAdmin(ctx *gin.Context) {
 	ctx.Next()
 }
 
+func (r *rest) VerifyTransaction(ctx *gin.Context) {
+	user, err := r.auth.GetUserAuthInfo(ctx.Request.Context())
+	if err != nil {
+		r.httpRespError(ctx, http.StatusUnauthorized, err)
+		return
+	}
+
+	var selectParam entity.TransactionParam
+	if err := ctx.ShouldBindUri(&selectParam); err != nil {
+		r.httpRespError(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	if err := r.uc.Transaction.ValidateTransaction(ctx, selectParam.ID, user.User.ID); err != nil {
+		r.httpRespError(ctx, http.StatusUnauthorized, err)
+		return
+	}
+
+	ctx.Next()
+}
+
 func (r *rest) ValidateToken(encodedToken string) (*jwt.Token, error) {
 	token, err := jwt.Parse(encodedToken, func(t *jwt.Token) (interface{}, error) {
 		_, ok := t.Method.(*jwt.SigningMethodHMAC)

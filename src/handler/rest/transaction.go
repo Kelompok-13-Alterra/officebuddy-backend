@@ -41,6 +41,41 @@ func (r *rest) CreateOrder(ctx *gin.Context) {
 	r.httpRespSuccess(ctx, http.StatusCreated, "successfully created new order", gin.H{"id_transaction": id})
 }
 
+// @Summary Reschedule Transaction
+// @Description Reschedule transaction
+// @Security BearerAuth
+// @Tags Transaction
+// @Param transaction_id path integer true "tranasction id"
+// @Param transaction body entity.InputUpdateTransactionParam true "transaction info"
+// @Produce json
+// @Success 200 {object} entity.Response{}
+// @Failure 400 {object} entity.Response{}
+// @Failure 401 {object} entity.Response{}
+// @Failure 404 {object} entity.Response{}
+// @Failure 500 {object} entity.Response{}
+// @Router /api/v1/transaction/{transaction_id}/reschedule [PUT]
+func (r *rest) RescheduleBooked(ctx *gin.Context) {
+	var inputParam entity.InputUpdateTransactionParam
+	if err := ctx.ShouldBindJSON(&inputParam); err != nil {
+		r.httpRespError(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	var selectParam entity.TransactionParam
+	if err := ctx.ShouldBindUri(&selectParam); err != nil {
+		r.httpRespError(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	err := r.uc.Transaction.RescheduleBooked(ctx.Request.Context(), inputParam, selectParam)
+	if err != nil {
+		r.httpRespError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	r.httpRespSuccess(ctx, http.StatusCreated, "successfully reschedule transaction", nil)
+}
+
 // @Summary Get Transaction Booked List
 // @Description Get Transaction Booked List
 // @Security BearerAuth
