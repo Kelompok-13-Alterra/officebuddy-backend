@@ -87,3 +87,19 @@ func (r rest) LoginAdmin(ctx *gin.Context) {
 
 	r.httpRespSuccess(ctx, http.StatusOK, "successfully login", gin.H{"token": token})
 }
+
+func (r *rest) UpdateUser(ctx *gin.Context) {
+	var updateParam entity.UpdateUserParam
+	if err := ctx.ShouldBindJSON(&updateParam); err != nil {
+		r.httpRespError(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	err := r.uc.User.Update(ctx.Request.Context(), updateParam)
+	if err != nil {
+		r.httpRespError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	r.httpRespSuccess(ctx, http.StatusOK, "successfully update user", nil)
+}
