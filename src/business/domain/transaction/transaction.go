@@ -12,6 +12,7 @@ type Interface interface {
 	GetList(param entity.TransactionParam) ([]entity.Transaction, error)
 	GetListBooked(param entity.TransactionParam) ([]entity.Transaction, error)
 	Get(param entity.TransactionParam) (entity.Transaction, error)
+	GetAvaibility(param entity.TransactionParam) (entity.Transaction, error)
 	Update(selectParam entity.TransactionParam, updateParam entity.UpdateTransactionParam) error
 	Delete(param entity.TransactionParam) error
 }
@@ -54,6 +55,16 @@ func (t *transaction) GetListBooked(param entity.TransactionParam) ([]entity.Tra
 	}
 
 	return transactions, nil
+}
+
+func (t *transaction) GetAvaibility(param entity.TransactionParam) (entity.Transaction, error) {
+	transaction := entity.Transaction{}
+
+	if err := t.db.Where("((? BETWEEN start AND end) OR (? BETWEEN start AND end)) AND office_id = ?", param.Start, param.End, param.OfficeID).Limit(1).Find(&transaction).Error; err != nil {
+		return transaction, err
+	}
+
+	return transaction, nil
 }
 
 func (t *transaction) Get(param entity.TransactionParam) (entity.Transaction, error) {

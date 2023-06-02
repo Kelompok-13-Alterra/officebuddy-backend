@@ -153,10 +153,15 @@ func (r *rest) Register() {
 	office.PUT("/:office_id", r.VerifyUser, r.VerifyAdmin, r.UpdateOffice)
 
 	transaction := v1.Group("/transaction")
+	transaction.POST("/office/:office_id/book", r.VerifyUser, r.CreateOrder)
 	transaction.GET("/booked", r.VerifyUser, r.GetTransactionBookedList)
-  
-  notification := v1.Group("/notification")
+	transaction.GET("/:transaction_id/payment-detail", r.VerifyUser, r.GetPaymentDetail)
+
+	notification := v1.Group("/notification")
 	notification.GET("", r.VerifyUser, r.GetNotificationList)
+
+	midtransTransaction := v1.Group("/midtrans-transaction")
+	midtransTransaction.POST("/handle", r.HandleNotification)
 }
 
 func (r *rest) registerSwaggerRoutes() {
