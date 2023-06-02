@@ -106,7 +106,6 @@ func (r *rest) GetOffice(ctx *gin.Context) {
 // @Security BearerAuth
 // @Tags Office
 // @Produce json
-// @Param office_id path integer true "office id"
 // @Param office body entity.UpdateOfficeParam true "office info"
 // @Success 200 {object} entity.Response{}
 // @Failure 400 {object} entity.Response{}

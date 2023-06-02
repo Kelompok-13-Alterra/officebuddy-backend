@@ -145,7 +145,6 @@ func (r *rest) Register() {
 	auth := v1.Group("/auth")
 	auth.POST("/register", r.RegisterUser)
 	auth.POST("/login", r.LoginUser)
-	auth.PUT("/user/edit", r.VerifyUser, r.UpdateUser)
 	auth.POST("/admin-login", r.LoginAdmin)
 
 	user := v1.Group("/user")
