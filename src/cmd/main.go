@@ -6,6 +6,7 @@ import (
 	"go-clean/src/handler/rest"
 	"go-clean/src/lib/auth"
 	"go-clean/src/lib/configreader"
+	"go-clean/src/lib/midtrans"
 	"go-clean/src/lib/sql"
 	"go-clean/src/utils/config"
 
@@ -36,7 +37,9 @@ func main() {
 
 	db := sql.Init(cfg.SQL)
 
-	d := domain.Init(db)
+	midtrans := midtrans.Init(cfg.Midtrans)
+
+	d := domain.Init(db, midtrans)
 
 	uc := usecase.Init(auth, d)
 

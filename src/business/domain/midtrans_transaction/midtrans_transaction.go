@@ -55,9 +55,7 @@ func (t *transaction) Get(param entity.MidtransTransactionParam) (entity.Midtran
 }
 
 func (t *transaction) Update(selectParam entity.MidtransTransactionParam, updateParam entity.UpdateMidtransTransactionParam) error {
-	if err := t.db.Model(&selectParam).Updates(entity.MidtransTransaction{
-		Status: updateParam.Status,
-	}).Error; err != nil {
+	if err := t.db.Model(entity.MidtransTransaction{}).Where(selectParam).Updates(updateParam).Error; err != nil {
 		return err
 	}
 

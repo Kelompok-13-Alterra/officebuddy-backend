@@ -54,11 +54,7 @@ func (a *user) GetById(id uint) (entity.User, error) {
 }
 
 func (o *user) Update(selectParam entity.UpdateUserParam, updateParam entity.UpdateUserParam) error {
-	if err := o.db.Model(&selectParam).Updates(entity.User{
-		Name:     updateParam.Name,
-		Email:    updateParam.Email,
-		Password: updateParam.Password,
-	}).Error; err != nil {
+	if err := o.db.Model(entity.User{}).Where(selectParam).Updates(updateParam).Error; err != nil {
 		return err
 	}
 
