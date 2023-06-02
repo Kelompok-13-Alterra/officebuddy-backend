@@ -11,6 +11,7 @@ type Interface interface {
 	GetByEmail(email string) (entity.User, error)
 	GetById(id uint) (entity.User, error)
 	Update(selectParam entity.UpdateUserParam, updateParam entity.UpdateUserParam) error
+	Delete(param entity.UserParam) error
 }
 
 type user struct {
@@ -55,6 +56,14 @@ func (a *user) GetById(id uint) (entity.User, error) {
 
 func (o *user) Update(selectParam entity.UpdateUserParam, updateParam entity.UpdateUserParam) error {
 	if err := o.db.Model(entity.User{}).Where(selectParam).Updates(updateParam).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (t *user) Delete(param entity.UserParam) error {
+	if err := t.db.Where(param).Delete(&entity.UserParam{}).Error; err != nil {
 		return err
 	}
 

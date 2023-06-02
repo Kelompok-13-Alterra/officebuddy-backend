@@ -10,6 +10,7 @@ type Interface interface {
 	Create(rating entity.Rating) (entity.Rating, error)
 	GetList(param entity.RatingParam) ([]entity.Rating, error)
 	Get(param entity.RatingParam) (entity.Rating, error)
+	Delete(param entity.RatingParam) error
 }
 
 type rating struct {
@@ -50,4 +51,12 @@ func (r *rating) Get(param entity.RatingParam) (entity.Rating, error) {
 	}
 
 	return rating, nil
+}
+
+func (t *rating) Delete(param entity.RatingParam) error {
+	if err := t.db.Where(param).Delete(&entity.Rating{}).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
