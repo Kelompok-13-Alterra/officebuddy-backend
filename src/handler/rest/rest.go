@@ -156,6 +156,7 @@ func (r *rest) Register() {
 	transaction := v1.Group("/transaction")
 	transaction.POST("/office/:office_id/book", r.VerifyUser, r.CreateOrder)
 	transaction.GET("/booked", r.VerifyUser, r.GetTransactionBookedList)
+	transaction.GET("/history", r.VerifyUser, r.GetTransactionHistoryBookedList)
 	transaction.GET("/:transaction_id/payment-detail", r.VerifyUser, r.VerifyTransaction, r.GetPaymentDetail)
 	transaction.PUT("/:transaction_id/reschedule", r.VerifyUser, r.VerifyTransaction, r.RescheduleBooked)
 

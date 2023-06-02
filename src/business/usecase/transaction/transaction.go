@@ -20,6 +20,7 @@ import (
 type Interface interface {
 	Create(ctx context.Context, param entity.CreateTransactionParam) (uint, error)
 	GetListBooked(ctx context.Context) ([]entity.Transaction, error)
+  GetListHistoryBooked(ctx context.Context) ([]entity.Transaction, error)
 	RescheduleBooked(ctx context.Context, param entity.InputUpdateTransactionParam, selectParam entity.TransactionParam) error
 	ValidateTransaction(ctx context.Context, transactionID uint, userID uint) error
 }
@@ -186,6 +187,27 @@ func (t *transaction) GetListBooked(ctx context.Context) ([]entity.Transaction, 
 	}
 
 	transactions, err = t.transaction.GetListBooked(entity.TransactionParam{
+		UserID: user.User.ID,
+	})
+	if err != nil {
+		return transactions, err
+	}
+
+	return transactions, nil
+}
+
+func (t *transaction) GetListHistoryBooked(ctx context.Context) ([]entity.Transaction, error) {
+	var (
+		transactions []entity.Transaction
+		err          error
+	)
+
+	user, err := t.auth.GetUserAuthInfo(ctx)
+	if err != nil {
+		return transactions, err
+	}
+
+	transactions, err = t.transaction.GetListHistoryBooked(entity.TransactionParam{
 		UserID: user.User.ID,
 	})
 	if err != nil {

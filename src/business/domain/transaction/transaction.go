@@ -11,6 +11,7 @@ type Interface interface {
 	Create(transaction entity.Transaction) (entity.Transaction, error)
 	GetList(param entity.TransactionParam) ([]entity.Transaction, error)
 	GetListBooked(param entity.TransactionParam) ([]entity.Transaction, error)
+	GetListHistoryBooked(param entity.TransactionParam) ([]entity.Transaction, error)
 	Get(param entity.TransactionParam) (entity.Transaction, error)
 	GetAvaibility(param entity.TransactionParam) (entity.Transaction, error)
 	Update(selectParam entity.TransactionParam, updateParam entity.UpdateTransactionParam) error
@@ -51,6 +52,16 @@ func (t *transaction) GetListBooked(param entity.TransactionParam) ([]entity.Tra
 	transactions := []entity.Transaction{}
 
 	if err := t.db.Where("start >= ? and user_id = ?", time.Now(), param.UserID).Find(&transactions).Error; err != nil {
+		return transactions, err
+	}
+
+	return transactions, nil
+}
+
+func (t *transaction) GetListHistoryBooked(param entity.TransactionParam) ([]entity.Transaction, error) {
+	transactions := []entity.Transaction{}
+
+	if err := t.db.Where("start <= ? and user_id = ?", time.Now(), param.UserID).Find(&transactions).Error; err != nil {
 		return transactions, err
 	}
 
