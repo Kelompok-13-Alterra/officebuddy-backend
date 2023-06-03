@@ -2,6 +2,7 @@ package rating
 
 import (
 	"go-clean/src/business/entity"
+	"log"
 
 	"gorm.io/gorm"
 )
@@ -26,6 +27,7 @@ func Init(db *gorm.DB) Interface {
 }
 
 func (r *rating) Create(rating entity.Rating) (entity.Rating, error) {
+	log.Printf("%#v", rating)
 	if err := r.db.Create(&rating).Error; err != nil {
 		return rating, err
 	}
