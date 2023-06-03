@@ -10,7 +10,7 @@ import (
 type Interface interface {
 	Create(office entity.Office) (entity.Office, error)
 	GetList(param entity.OfficeParam) ([]entity.Office, error)
-	GetListByLikeName(name string) ([]entity.Office, error)
+	GetListByLike(param entity.OfficeParam) ([]entity.Office, error)
 	Get(param entity.OfficeParam) (entity.Office, error)
 	Update(selectParam entity.OfficeParam, updateParam entity.UpdateOfficeParam) error
 	Delete(param entity.OfficeParam) error
@@ -46,10 +46,10 @@ func (o *office) GetList(param entity.OfficeParam) ([]entity.Office, error) {
 	return offices, nil
 }
 
-func (o *office) GetListByLikeName(name string) ([]entity.Office, error) {
+func (o *office) GetListByLike(param entity.OfficeParam) ([]entity.Office, error) {
 	offices := []entity.Office{}
 
-	if err := o.db.Where("name LIKE ?", fmt.Sprintf("%%%s%%", name)).Find(&offices).Error; err != nil {
+	if err := o.db.Where("name LIKE ? AND location LIKE ?", fmt.Sprintf("%%%s%%", param.Name), fmt.Sprintf("%%%s%%", param.Location)).Find(&offices).Error; err != nil {
 		return offices, err
 	}
 

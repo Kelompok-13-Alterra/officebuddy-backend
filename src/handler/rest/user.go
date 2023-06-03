@@ -93,7 +93,6 @@ func (r rest) LoginAdmin(ctx *gin.Context) {
 // @Security BearerAuth
 // @Tags User
 // @Produce json
-// @Param user_id path integer true "user id"
 // @Param user body entity.UpdateUserParam true "user info"
 // @Success 200 {object} entity.Response{}
 // @Failure 400 {object} entity.Response{}

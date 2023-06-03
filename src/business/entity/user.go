@@ -2,17 +2,21 @@ package entity
 
 import (
 	"go-clean/src/lib/auth"
+	"time"
 
 	"gorm.io/gorm"
 )
 
 type User struct {
 	gorm.Model
-	Name     string
-	Email    string `gorm:"unique"`
-	Password string `json:"-"`
-	Role     int
-	IsVerify bool
+	Name      string
+	Email     string `gorm:"unique"`
+	Password  string `json:"-"`
+	Company   string
+	Gender    string
+	DateBirth time.Time
+	Role      int
+	IsVerify  bool
 }
 
 type CreateUserParam struct {
@@ -27,9 +31,13 @@ type LoginUserParam struct {
 }
 
 type UpdateUserParam struct {
-	Name     string
-	Email    string
-	Password string
+	Name           string
+	Email          string
+	Password       string
+	Company        string
+	Gender         string
+	DateBirth      time.Time `json:"-"`
+	DateBirthInput string    `gorm:"-"`
 }
 
 type UserParam struct {

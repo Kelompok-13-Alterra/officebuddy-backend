@@ -73,8 +73,9 @@ type OfficeTypeParam struct {
 }
 
 type OfficeParam struct {
-	ID   uint   `uri:"office_id" json:"id"`
-	Name string `form:"name" json:"name"`
+	ID       uint   `uri:"office_id" json:"id"`
+	Name     string `form:"name" json:"name"`
+	Location string `form:"location" json:"location"`
 }
 
 type UpdateOfficeParam struct {

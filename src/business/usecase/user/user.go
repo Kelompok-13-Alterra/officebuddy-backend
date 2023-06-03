@@ -6,6 +6,7 @@ import (
 	userDom "go-clean/src/business/domain/user"
 	"go-clean/src/business/entity"
 	auth "go-clean/src/lib/auth"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -118,6 +119,14 @@ func (u *user) Update(ctx context.Context, inputParam entity.UpdateUserParam) er
 		return err
 	}
 
+	if inputParam.DateBirthInput != "" {
+		formatedDate, err := u.formatDate(inputParam.DateBirthInput)
+		if err != nil {
+			return err
+		}
+		inputParam.DateBirth = formatedDate
+	}
+
 	if err := u.user.Update(entity.UpdateUserParam{
 		Email: user.User.Email,
 	}, inputParam); err != nil {
@@ -125,4 +134,16 @@ func (u *user) Update(ctx context.Context, inputParam entity.UpdateUserParam) er
 	}
 
 	return nil
+}
+
+func (u *user) formatDate(date string) (time.Time, error) {
+	var formatedDate time.Time
+
+	layoutFormat := "2006-01-02"
+	formatedDate, err := time.Parse(layoutFormat, date)
+	if err != nil {
+		return formatedDate, err
+	}
+
+	return formatedDate, nil
 }

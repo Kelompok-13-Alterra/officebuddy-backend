@@ -70,8 +70,8 @@ func (o *office) GetList(param entity.OfficeParam) ([]entity.Office, error) {
 		err     error
 	)
 
-	if param.Name != "" {
-		offices, err = o.office.GetListByLikeName(param.Name)
+	if param.Name != "" || param.Location != "" {
+		offices, err = o.office.GetListByLike(param)
 	} else {
 		offices, err = o.office.GetList(param)
 
