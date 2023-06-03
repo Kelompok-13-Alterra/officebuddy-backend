@@ -20,7 +20,7 @@ type User struct {
 }
 
 type CreateUserParam struct {
-	Email    string `binding:"required"`
+	Email    string `binding:"required,email"`
 	Password string `binding:"required"`
 	Name     string `binding:"required"`
 }
