@@ -51,6 +51,7 @@ func (r *rest) CreateOffice(ctx *gin.Context) {
 // @Tags Office
 // @Produce json
 // @Param name query string false "name"
+// @Param location query string false "location"
 // @Success 200 {object} entity.Response{data=[]entity.Office{}}
 // @Failure 400 {object} entity.Response{}
 // @Failure 401 {object} entity.Response{}
