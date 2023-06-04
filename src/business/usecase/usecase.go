@@ -18,6 +18,7 @@ type Usecase struct {
 	Transaction         transaction.Interface
 	Notification        notification.Interface
 	MidtransTransaction midtrans_transaction.Interface
+	Rating              rating.Interface
 }
 
 func Init(auth auth.Interface, d *domain.Domains) *Usecase {
@@ -28,6 +29,7 @@ func Init(auth auth.Interface, d *domain.Domains) *Usecase {
 		Notification:        notification.Init(d.Notification, auth),
 		Rating:              rating.Init(d.Rating, d.Transaction, auth),
 		MidtransTransaction: midtrans_transaction.Init(d.MidtransTransaction, d.Midtrans),
+		Rating:              rating.Init(d.Rating),
 	}
 
 	return uc

@@ -11,6 +11,7 @@ import (
 
 type Interface interface {
 	Create(ctx context.Context, param entity.CreateRatingParam) (entity.Rating, error)
+	GetList(param entity.RatingParam) ([]entity.Rating, error)
 }
 
 type rating struct {
@@ -20,13 +21,13 @@ type rating struct {
 }
 
 func Init(rd ratingDom.Interface, td transactionDom.Interface, auth auth.Interface) Interface {
-	o := &rating{
+	r := &rating{
 		transaction: td,
 		rating:      rd,
 		auth:        auth,
 	}
 
-	return o
+	return r
 }
 
 func (r *rating) Create(ctx context.Context, param entity.CreateRatingParam) (entity.Rating, error) {
@@ -63,4 +64,19 @@ func (r *rating) Create(ctx context.Context, param entity.CreateRatingParam) (en
 	}
 
 	return rating, nil
+}
+
+func (r *rating) GetList(param entity.RatingParam) ([]entity.Rating, error) {
+	var (
+		ratings []entity.Rating
+		err     error
+	)
+
+	ratings, err = r.rating.GetList(entity.RatingParam{})
+
+	if err != nil {
+		return ratings, err
+	}
+
+	return ratings, nil
 }
