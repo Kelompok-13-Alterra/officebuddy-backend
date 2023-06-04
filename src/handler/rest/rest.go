@@ -168,6 +168,9 @@ func (r *rest) Register() {
 
 	midtransTransaction := v1.Group("/midtrans-transaction")
 	midtransTransaction.POST("/handle", r.HandleNotification)
+
+	rating := v1.Group("/rating")
+	rating.GET("", r.VerifyUser, r.VerifyAdmin, r.GetRatingList)
 }
 
 func (r *rest) registerSwaggerRoutes() {
