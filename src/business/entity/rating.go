@@ -22,8 +22,6 @@ type RatingParam struct {
 }
 
 type CreateRatingParam struct {
-	UserID        uint
-	OfficeID      uint
 	TransactionID uint     `json:"-" uri:"transaction_id"`
 	Star          int      `binding:"required"`
 	Tags          []string `binding:"required"`
