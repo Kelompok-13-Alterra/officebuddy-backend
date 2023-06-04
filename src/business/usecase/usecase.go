@@ -14,10 +14,10 @@ import (
 type Usecase struct {
 	User                user.Interface
 	Office              office.Interface
+	Rating              rating.Interface
 	Transaction         transaction.Interface
 	Notification        notification.Interface
 	MidtransTransaction midtrans_transaction.Interface
-	Rating              rating.Interface
 }
 
 func Init(auth auth.Interface, d *domain.Domains) *Usecase {
@@ -26,8 +26,8 @@ func Init(auth auth.Interface, d *domain.Domains) *Usecase {
 		Office:              office.Init(d.Office),
 		Transaction:         transaction.Init(d.Transaction, auth, d.Office, d.Midtrans, d.MidtransTransaction),
 		Notification:        notification.Init(d.Notification, auth),
+		Rating:              rating.Init(d.Rating, d.Transaction, auth),
 		MidtransTransaction: midtrans_transaction.Init(d.MidtransTransaction, d.Midtrans),
-		Rating:              rating.Init(d.Rating),
 	}
 
 	return uc
