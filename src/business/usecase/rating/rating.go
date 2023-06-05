@@ -47,7 +47,15 @@ func (r *rating) Create(ctx context.Context, param entity.CreateRatingParam) (en
 		return rating, err
 	}
 
-	if time.Now().After(transaction.End) {
+	count, err := r.rating.GetListCount(entity.RatingParam{
+		TransactionID: param.TransactionID,
+	})
+
+	if count >= 1 {
+		return rating, errors.New("kamu sudah melakukan review")
+	}
+
+	if time.Now().Before(transaction.End) {
 		return rating, errors.New("transaksi belum selesai")
 	}
 
