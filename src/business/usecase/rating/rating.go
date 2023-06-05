@@ -3,10 +3,12 @@ package rating
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	ratingDom "go-clean/src/business/domain/rating"
 	transactionDom "go-clean/src/business/domain/transaction"
 	"go-clean/src/business/entity"
 	"go-clean/src/lib/auth"
+	"time"
 )
 
 type Interface interface {
@@ -43,6 +45,18 @@ func (r *rating) Create(ctx context.Context, param entity.CreateRatingParam) (en
 	})
 	if err != nil {
 		return rating, err
+	}
+
+	rating, err = r.rating.Get(entity.RatingParam{
+		TransactionID: param.TransactionID,
+		OfficeID:      transaction.OfficeID,
+	})
+	if err == nil {
+		return rating, errors.New("kamu sudah melakukan review")
+	}
+
+	if time.Now().Before(transaction.End) {
+		return rating, errors.New("transaksi belum selesai")
 	}
 
 	tag, err := json.Marshal(param.Tags)
