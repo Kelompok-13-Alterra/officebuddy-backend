@@ -47,11 +47,11 @@ func (r *rating) Create(ctx context.Context, param entity.CreateRatingParam) (en
 		return rating, err
 	}
 
-	count, err := r.rating.GetListCount(entity.RatingParam{
+	rating, err = r.rating.Get(entity.RatingParam{
 		TransactionID: param.TransactionID,
+		OfficeID:      transaction.OfficeID,
 	})
-
-	if count >= 1 {
+	if err == nil {
 		return rating, errors.New("kamu sudah melakukan review")
 	}
 

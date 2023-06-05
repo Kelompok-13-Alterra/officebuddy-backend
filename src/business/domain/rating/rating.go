@@ -9,7 +9,6 @@ import (
 type Interface interface {
 	Create(rating entity.Rating) (entity.Rating, error)
 	GetList(param entity.RatingParam) ([]entity.Rating, error)
-	GetListCount(param entity.RatingParam) (int64, error)
 	Get(param entity.RatingParam) (entity.Rating, error)
 	Delete(param entity.RatingParam) error
 }
@@ -42,20 +41,6 @@ func (r *rating) GetList(param entity.RatingParam) ([]entity.Rating, error) {
 	}
 
 	return ratings, nil
-}
-
-func (r *rating) GetListCount(param entity.RatingParam) (int64, error) {
-	var count int64
-
-	if err := r.db.Model(&entity.Rating{}).
-		Where(&entity.Rating{
-			TransactionID: param.TransactionID,
-		}).
-		Count(&count).Error; err != nil {
-		return count, err
-	}
-
-	return count, nil
 }
 
 func (r *rating) Get(param entity.RatingParam) (entity.Rating, error) {
