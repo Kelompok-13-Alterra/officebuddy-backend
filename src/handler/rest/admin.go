@@ -7,6 +7,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary Get Rating List
+// @Description Get Rating List
+// @Security BearerAuth
+// @Tags Rating
+// @Produce json
+// @Success 200 {object} entity.Response{data=[]entity.Rating{}}
+// @Failure 400 {object} entity.Response{}
+// @Failure 401 {object} entity.Response{}
+// @Failure 404 {object} entity.Response{}
+// @Failure 500 {object} entity.Response{}
+// @Router /api/v1/rating [GET]
 func (r *rest) GetRatingList(ctx *gin.Context) {
 	rating, err := r.uc.Rating.GetList(entity.RatingParam{})
 	if err != nil {

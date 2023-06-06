@@ -19,7 +19,7 @@ import (
 // @Failure 401 {object} entity.Response{}
 // @Failure 404 {object} entity.Response{}
 // @Failure 500 {object} entity.Response{}
-// @Router /api/v1/transaction/history/{rating_id}/review [POST]
+// @Router /api/v1/rating/{transaction_id} [POST]
 func (r *rest) CreateRating(ctx *gin.Context) {
 	var inputParam entity.CreateRatingParam
 	if err := ctx.ShouldBindJSON(&inputParam); err != nil {
