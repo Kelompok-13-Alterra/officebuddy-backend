@@ -15,7 +15,7 @@ type Rating struct {
 }
 
 type RatingParam struct {
-	ID            uint
+	ID            uint `json:"-" uri:"id" binding:"required"`
 	UserID        uint
 	OfficeID      uint
 	TransactionID uint

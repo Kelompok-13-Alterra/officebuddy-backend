@@ -14,6 +14,7 @@ import (
 type Interface interface {
 	Create(ctx context.Context, param entity.CreateRatingParam) (entity.Rating, error)
 	GetList(param entity.RatingParam) ([]entity.Rating, error)
+	Get(param entity.RatingParam) (entity.Rating, error)
 }
 
 type rating struct {
@@ -93,4 +94,13 @@ func (r *rating) GetList(param entity.RatingParam) ([]entity.Rating, error) {
 	}
 
 	return ratings, nil
+}
+
+func (r *rating) Get(param entity.RatingParam) (entity.Rating, error) {
+	rating, err := r.rating.Get(param)
+	if err != nil {
+		return rating, err
+	}
+
+	return rating, nil
 }

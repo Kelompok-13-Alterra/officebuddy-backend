@@ -172,6 +172,7 @@ func (r *rest) Register() {
 
 	rating := v1.Group("/rating")
 	rating.GET("", r.VerifyUser, r.VerifyAdmin, r.GetRatingList)
+	rating.GET("/:id", r.VerifyUser, r.VerifyAdmin, r.GetRating)
 	rating.POST("/:transaction_id", r.VerifyUser, r.CreateRating)
 }
 
