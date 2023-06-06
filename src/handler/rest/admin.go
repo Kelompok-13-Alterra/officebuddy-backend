@@ -55,3 +55,13 @@ func (r *rest) GetRating(ctx *gin.Context) {
 
 	r.httpRespSuccess(ctx, http.StatusOK, "successfull get rating detail", rating)
 }
+
+func (r *rest) GetUserList(ctx *gin.Context) {
+	user, err := r.uc.User.GetUserList(entity.UserParam{})
+	if err != nil {
+		r.httpRespError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	r.httpRespSuccess(ctx, http.StatusCreated, "successfully get user list", user)
+}

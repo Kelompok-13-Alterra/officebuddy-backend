@@ -18,6 +18,7 @@ type Interface interface {
 	Get(ctx context.Context) (entity.User, error)
 	GetById(id uint) (entity.User, error)
 	Update(ctx context.Context, inputParam entity.UpdateUserParam) error
+	GetUserList(param entity.UserParam) ([]entity.User, error)
 }
 
 type user struct {
@@ -159,4 +160,19 @@ func (u *user) formatDate(date string) (time.Time, error) {
 	}
 
 	return formatedDate, nil
+}
+
+func (r *user) GetUserList(param entity.UserParam) ([]entity.User, error) {
+	var (
+		users []entity.User
+		err   error
+	)
+
+	users, err = r.user.GetList(entity.UserParam{})
+
+	if err != nil {
+		return users, err
+	}
+
+	return users, nil
 }

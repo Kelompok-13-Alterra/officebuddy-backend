@@ -10,6 +10,7 @@ type Interface interface {
 	Create(user entity.User) (entity.User, error)
 	GetByEmail(email string) (entity.User, error)
 	GetById(id uint) (entity.User, error)
+	GetList(param entity.UserParam) ([]entity.User, error)
 	Update(selectParam entity.UpdateUserParam, updateParam entity.UpdateUserParam) error
 	Delete(param entity.UserParam) error
 }
@@ -52,6 +53,16 @@ func (a *user) GetById(id uint) (entity.User, error) {
 	}
 
 	return user, nil
+}
+
+func (r *user) GetList(param entity.UserParam) ([]entity.User, error) {
+	users := []entity.User{}
+
+	if err := r.db.Where(param).Find(&users).Error; err != nil {
+		return users, err
+	}
+
+	return users, nil
 }
 
 func (o *user) Update(selectParam entity.UpdateUserParam, updateParam entity.UpdateUserParam) error {
