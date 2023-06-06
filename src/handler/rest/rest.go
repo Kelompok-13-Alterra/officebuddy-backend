@@ -149,6 +149,7 @@ func (r *rest) Register() {
 
 	user := v1.Group("/user")
 	user.PUT("/edit", r.VerifyUser, r.UpdateUser)
+	user.GET("/me", r.VerifyUser, r.GetRatingList)
 
 	office := v1.Group("/office")
 	office.POST("", r.VerifyUser, r.VerifyAdmin, r.CreateOffice)

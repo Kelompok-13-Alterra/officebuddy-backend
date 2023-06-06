@@ -115,3 +115,13 @@ func (r *rest) UpdateUser(ctx *gin.Context) {
 
 	r.httpRespSuccess(ctx, http.StatusOK, "successfully update user", nil)
 }
+
+func (r *rest) Get(ctx *gin.Context) {
+	userProfile, err := r.uc.User.Get(ctx.Request.Context())
+	if err != nil {
+		r.httpRespError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	r.httpRespSuccess(ctx, http.StatusOK, "successfully get profile", userProfile)
+}
