@@ -14,7 +14,7 @@ type User struct {
 	Password  string `json:"-"`
 	Company   string
 	Gender    string
-	DateBirth time.Time
+	DateBirth *time.Time
 	Role      int
 	IsVerify  bool
 }

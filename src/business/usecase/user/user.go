@@ -36,10 +36,11 @@ func Init(ad userDom.Interface, auth auth.Interface) Interface {
 
 func (a *user) Create(params entity.CreateUserParam) (entity.User, error) {
 	user := entity.User{
-		Email:    params.Email,
-		Name:     params.Name,
-		Role:     auth.RoleUser,
-		IsVerify: false,
+		Email:     params.Email,
+		Name:      params.Name,
+		DateBirth: nil,
+		Role:      auth.RoleUser,
+		IsVerify:  false,
 	}
 
 	hashPass, err := bcrypt.GenerateFromPassword([]byte(params.Password), bcrypt.MinCost)
