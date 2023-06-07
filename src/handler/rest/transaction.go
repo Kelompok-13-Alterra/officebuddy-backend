@@ -117,3 +117,13 @@ func (r *rest) GetTransactionHistoryBookedList(ctx *gin.Context) {
 
 	r.httpRespSuccess(ctx, http.StatusOK, "successfully get transactions history booked list", result)
 }
+
+func (r *rest) GetTransactionList(ctx *gin.Context) {
+	transaction, err := r.uc.Transaction.GetTransactionList(entity.TransactionParam{})
+	if err != nil {
+		r.httpRespError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	r.httpRespSuccess(ctx, http.StatusCreated, "successfully get transaction list", transaction)
+}
