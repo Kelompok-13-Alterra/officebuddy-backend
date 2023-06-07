@@ -39,7 +39,7 @@ func (r *rest) GetRatingList(ctx *gin.Context) {
 // @Failure 401 {object} entity.Response{}
 // @Failure 404 {object} entity.Response{}
 // @Failure 500 {object} entity.Response{}
-// @Router /api/v1/rating/{id} [GET]
+// @Router /api/v1/rating/{rating_id} [GET]
 func (r *rest) GetRating(ctx *gin.Context) {
 	var param entity.RatingParam
 	if err := ctx.ShouldBindUri(&param); err != nil {

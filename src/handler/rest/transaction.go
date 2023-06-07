@@ -118,6 +118,17 @@ func (r *rest) GetTransactionHistoryBookedList(ctx *gin.Context) {
 	r.httpRespSuccess(ctx, http.StatusOK, "successfully get transactions history booked list", result)
 }
 
+// @Summary Get Transaction List
+// @Description Get Transaction List for Admin
+// @Security BearerAuth
+// @Tags Transaction
+// @Produce json
+// @Success 200 {object} entity.Response{data=[]entity.Transaction}
+// @Failure 400 {object} entity.Response{}
+// @Failure 401 {object} entity.Response{}
+// @Failure 404 {object} entity.Response{}
+// @Failure 500 {object} entity.Response{}
+// @Router /api/v1/transaction [GET]
 func (r *rest) GetTransactionList(ctx *gin.Context) {
 	transaction, err := r.uc.Transaction.GetTransactionList(entity.TransactionParam{})
 	if err != nil {
