@@ -15,7 +15,7 @@ type Interface interface {
 	Create(params entity.CreateUserParam) (entity.User, error)
 	Login(params entity.LoginUserParam) (string, error)
 	LoginAdmin(params entity.LoginUserParam) (string, error)
-	Get(ctx context.Context) (entity.User, error)
+	GetProfile(ctx context.Context) (entity.User, error)
 	GetById(id uint) (entity.User, error)
 	Update(ctx context.Context, inputParam entity.UpdateUserParam) error
 	GetUserList(param entity.UserParam) ([]entity.User, error)
@@ -59,7 +59,7 @@ func (a *user) Create(params entity.CreateUserParam) (entity.User, error) {
 	return newUser, nil
 }
 
-func (u *user) Get(ctx context.Context) (entity.User, error) {
+func (u *user) GetProfile(ctx context.Context) (entity.User, error) {
 	user, err := u.auth.GetUserAuthInfo(ctx)
 	if err != nil {
 		return entity.User{}, err

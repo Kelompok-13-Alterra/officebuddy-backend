@@ -116,8 +116,19 @@ func (r *rest) UpdateUser(ctx *gin.Context) {
 	r.httpRespSuccess(ctx, http.StatusOK, "successfully update user", nil)
 }
 
-func (r *rest) Get(ctx *gin.Context) {
-	userProfile, err := r.uc.User.Get(ctx.Request.Context())
+// @Summary Get Profile
+// @Description Get User Profile
+// @Security BearerAuth
+// @Tags User
+// @Produce json
+// @Success 200 {object} entity.Response{}
+// @Failure 400 {object} entity.Response{}
+// @Failure 401 {object} entity.Response{}
+// @Failure 404 {object} entity.Response{}
+// @Failure 500 {object} entity.Response{}
+// @Router /api/v1/user/me [GET]
+func (r *rest) GetProfile(ctx *gin.Context) {
+	userProfile, err := r.uc.User.GetProfile(ctx.Request.Context())
 	if err != nil {
 		r.httpRespError(ctx, http.StatusInternalServerError, err)
 		return

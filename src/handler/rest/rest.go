@@ -149,7 +149,7 @@ func (r *rest) Register() {
 
 	user := v1.Group("/user")
 	user.PUT("/edit", r.VerifyUser, r.UpdateUser)
-	user.GET("/me", r.VerifyUser, r.GetRatingList)
+	user.GET("/me", r.VerifyUser, r.GetProfile)
 	user.GET("", r.VerifyUser, r.VerifyAdmin, r.GetUserList)
 
 	office := v1.Group("/office")
@@ -175,7 +175,7 @@ func (r *rest) Register() {
 
 	rating := v1.Group("/rating")
 	rating.GET("", r.VerifyUser, r.VerifyAdmin, r.GetRatingList)
-	rating.GET("/:id", r.VerifyUser, r.VerifyAdmin, r.GetRating)
+	rating.GET("/:rating_id", r.VerifyUser, r.VerifyAdmin, r.GetRating)
 	rating.POST("/:transaction_id", r.VerifyUser, r.CreateRating)
 }
 

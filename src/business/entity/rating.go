@@ -1,6 +1,8 @@
 package entity
 
 import (
+	"time"
+
 	"gorm.io/gorm"
 )
 
@@ -14,8 +16,19 @@ type Rating struct {
 	Description   string
 }
 
+type RatingResponse struct {
+	ID            uint
+	UserID        uint
+	OfficeID      uint
+	TransactionID uint
+	Star          int
+	Tags          []string
+	Description   string
+	CreatedAt     time.Time
+}
+
 type RatingParam struct {
-	ID            uint `json:"-" uri:"id" binding:"required"`
+	ID            uint `json:"-" uri:"rating_id"`
 	UserID        uint
 	OfficeID      uint
 	TransactionID uint
