@@ -11,6 +11,7 @@ type Interface interface {
 	GetList(param entity.OfficeParam) ([]entity.Office, error)
 	Get(param entity.OfficeParam) (entity.Office, error)
 	Update(param entity.OfficeParam, inputParam entity.UpdateOfficeParam) error
+	Delete(param entity.OfficeParam) error
 }
 
 type office struct {
@@ -94,6 +95,16 @@ func (o *office) Get(param entity.OfficeParam) (entity.Office, error) {
 
 func (o *office) Update(param entity.OfficeParam, inputParam entity.UpdateOfficeParam) error {
 	if err := o.office.Update(param, inputParam); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *office) Delete(param entity.OfficeParam) error {
+	if err := o.office.Delete(entity.OfficeParam{
+		ID: param.ID,
+	}); err != nil {
 		return err
 	}
 

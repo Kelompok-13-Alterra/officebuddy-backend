@@ -107,6 +107,7 @@ func (r *rest) GetOffice(ctx *gin.Context) {
 // @Security BearerAuth
 // @Tags Office
 // @Produce json
+// @Param office_id path integer true "office id"
 // @Param office body entity.UpdateOfficeParam true "office info"
 // @Success 200 {object} entity.Response{}
 // @Failure 400 {object} entity.Response{}
@@ -134,4 +135,31 @@ func (r *rest) UpdateOffice(ctx *gin.Context) {
 	}
 
 	r.httpRespSuccess(ctx, http.StatusOK, "successfully update office", nil)
+}
+
+// @Summary Delete Office
+// @Description Delete a Office
+// @Security BearerAuth
+// @Tags Office
+// @Produce json
+// @Param office_id path integer true "office id"
+// @Success 200 {object} entity.Response{}
+// @Failure 400 {object} entity.Response{}
+// @Failure 401 {object} entity.Response{}
+// @Failure 404 {object} entity.Response{}
+// @Failure 500 {object} entity.Response{}
+// @Router /api/v1/office/{office_id} [DELETE]
+func (r *rest) DeleteOffice(ctx *gin.Context) {
+	var param entity.OfficeParam
+	if err := ctx.ShouldBindUri(&param); err != nil {
+		r.httpRespError(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	if err := r.uc.Office.Delete(param); err != nil {
+		r.httpRespError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	r.httpRespSuccess(ctx, http.StatusOK, "successfully delete an office", nil)
 }

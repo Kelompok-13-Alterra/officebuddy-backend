@@ -157,6 +157,7 @@ func (r *rest) Register() {
 	office.GET("", r.VerifyUser, r.GetOfficeList)
 	office.GET("/:office_id", r.VerifyUser, r.GetOffice)
 	office.PUT("/:office_id", r.VerifyUser, r.VerifyAdmin, r.UpdateOffice)
+	office.DELETE("/:office_id", r.VerifyUser, r.VerifyAdmin, r.DeleteOffice)
 
 	transaction := v1.Group("/transaction")
 	transaction.POST("/office/:office_id/book", r.VerifyUser, r.CreateOrder)
@@ -164,7 +165,7 @@ func (r *rest) Register() {
 	transaction.GET("/history", r.VerifyUser, r.GetTransactionHistoryBookedList)
 	transaction.GET("/:transaction_id/payment-detail", r.VerifyUser, r.VerifyTransaction, r.GetPaymentDetail)
 	transaction.PUT("/:transaction_id/reschedule", r.VerifyUser, r.VerifyTransaction, r.RescheduleBooked)
-	transaction.GET("",r.VerifyUser, r.VerifyAdmin, r.GetTransactionList)
+	transaction.GET("", r.VerifyUser, r.VerifyAdmin, r.GetTransactionList)
 
 	notification := v1.Group("/notification")
 	notification.GET("", r.VerifyUser, r.GetNotificationList)
