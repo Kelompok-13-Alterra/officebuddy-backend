@@ -11,7 +11,7 @@ import (
 // @Description Create New Rating
 // @Security BearerAuth
 // @Tags Rating
-// @Param rating_id path integer true "rating id"
+// @Param transaction_id path integer true "transaction id"
 // @Param rating body entity.CreateRatingParam true "rating info"
 // @Produce json
 // @Success 200 {object} entity.Response{data=entity.Rating{}}
