@@ -3,7 +3,6 @@ package transaction
 import (
 	"fmt"
 	"go-clean/src/business/entity"
-	"log"
 	"time"
 
 	"gorm.io/gorm"
@@ -94,7 +93,6 @@ func (t *transaction) Get(param entity.TransactionParam) (entity.Transaction, er
 func (t *transaction) GetTransactionToday() ([]entity.Transaction, error) {
 	transaction := []entity.Transaction{}
 	currentDate := time.Now().Format("2006-01-02")
-	log.Println(currentDate)
 	if err := t.db.Where("created_at LIKE ?", fmt.Sprintf("%%%s%%", currentDate)).Find(&transaction).Error; err != nil {
 		return transaction, err
 	}

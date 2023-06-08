@@ -5,7 +5,6 @@ import (
 	officeDom "go-clean/src/business/domain/office"
 	transactionDom "go-clean/src/business/domain/transaction"
 	"go-clean/src/business/entity"
-	"log"
 )
 
 type Interface interface {
@@ -48,8 +47,6 @@ func (wa *widgetAnalytic) GetDashboardWidget(ctx context.Context) (entity.Dashbo
 	if err != nil {
 		return result, err
 	}
-
-	log.Printf("%#v\n", transactions)
 
 	officeIDsMap := make(map[uint]bool)
 	officeIDs := []uint{}
