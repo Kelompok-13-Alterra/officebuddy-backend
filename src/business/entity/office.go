@@ -8,6 +8,11 @@ import (
 	"gorm.io/gorm"
 )
 
+const (
+	OfficeType    = "office"
+	CoWorkingType = "coworking"
+)
+
 type Office struct {
 	gorm.Model
 	Name        string
@@ -76,6 +81,7 @@ type OfficeParam struct {
 	ID       uint   `uri:"office_id" json:"id"`
 	Name     string `form:"name" json:"name"`
 	Location string `form:"location" json:"location"`
+	Type     string
 }
 
 type UpdateOfficeParam struct {

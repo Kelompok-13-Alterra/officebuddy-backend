@@ -1,7 +1,9 @@
 package transaction
 
 import (
+	"fmt"
 	"go-clean/src/business/entity"
+	"log"
 	"time"
 
 	"gorm.io/gorm"
@@ -14,6 +16,7 @@ type Interface interface {
 	GetListHistoryBooked(param entity.TransactionParam) ([]entity.Transaction, error)
 	Get(param entity.TransactionParam) (entity.Transaction, error)
 	GetAvaibility(param entity.TransactionParam) (entity.Transaction, error)
+	GetTransactionToday() ([]entity.Transaction, error)
 	Update(selectParam entity.TransactionParam, updateParam entity.UpdateTransactionParam) error
 	Delete(param entity.TransactionParam) error
 }
@@ -82,6 +85,17 @@ func (t *transaction) Get(param entity.TransactionParam) (entity.Transaction, er
 	transaction := entity.Transaction{}
 
 	if err := t.db.Where(param).First(&transaction).Error; err != nil {
+		return transaction, err
+	}
+
+	return transaction, nil
+}
+
+func (t *transaction) GetTransactionToday() ([]entity.Transaction, error) {
+	transaction := []entity.Transaction{}
+	currentDate := time.Now().Format("2006-01-02")
+	log.Println(currentDate)
+	if err := t.db.Where("created_at LIKE ?", fmt.Sprintf("%%%s%%", currentDate)).Find(&transaction).Error; err != nil {
 		return transaction, err
 	}
 

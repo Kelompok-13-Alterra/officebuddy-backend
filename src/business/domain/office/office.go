@@ -11,9 +11,11 @@ type Interface interface {
 	Create(office entity.Office) (entity.Office, error)
 	GetList(param entity.OfficeParam) ([]entity.Office, error)
 	GetListByLike(param entity.OfficeParam) ([]entity.Office, error)
+	GetListByID(officeIDs []uint) ([]entity.Office, error)
 	Get(param entity.OfficeParam) (entity.Office, error)
 	Update(selectParam entity.OfficeParam, updateParam entity.UpdateOfficeParam) error
 	Delete(param entity.OfficeParam) error
+	GetCount(param entity.OfficeParam) (int64, error)
 }
 
 type office struct {
@@ -56,6 +58,15 @@ func (o *office) GetListByLike(param entity.OfficeParam) ([]entity.Office, error
 	return offices, nil
 }
 
+func (o *office) GetListByID(officeIDs []uint) ([]entity.Office, error) {
+	offices := []entity.Office{}
+	if err := o.db.Find(&offices, officeIDs).Error; err != nil {
+		return offices, err
+	}
+
+	return offices, nil
+}
+
 func (o *office) Get(param entity.OfficeParam) (entity.Office, error) {
 	office := entity.Office{}
 
@@ -80,4 +91,13 @@ func (o *office) Delete(param entity.OfficeParam) error {
 	}
 
 	return nil
+}
+
+func (o *office) GetCount(param entity.OfficeParam) (int64, error) {
+	var result int64
+	if err := o.db.Model(entity.Office{}).Where(param).Count(&result).Error; err != nil {
+		return result, err
+	}
+
+	return result, nil
 }
