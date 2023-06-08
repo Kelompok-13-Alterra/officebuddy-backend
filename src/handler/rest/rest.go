@@ -178,6 +178,9 @@ func (r *rest) Register() {
 	rating.GET("", r.VerifyUser, r.VerifyAdmin, r.GetRatingList)
 	rating.GET("/:rating_id", r.VerifyUser, r.VerifyAdmin, r.GetRating)
 	rating.POST("/:transaction_id", r.VerifyUser, r.CreateRating)
+
+	widgetAnalytic := v1.Group("")
+	widgetAnalytic.GET("/admin/dashboard-widget", r.VerifyUser, r.VerifyAdmin, r.GetDashboardWidget)
 }
 
 func (r *rest) registerSwaggerRoutes() {

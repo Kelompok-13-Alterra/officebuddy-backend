@@ -20,11 +20,12 @@ type Transaction struct {
 }
 
 type TransactionParam struct {
-	ID       uint `uri:"transaction_id" json:"id"`
-	UserID   uint
-	OfficeID uint
-	Start    time.Time
-	End      time.Time
+	ID        uint `uri:"transaction_id" json:"id"`
+	UserID    uint
+	OfficeID  uint
+	Start     time.Time
+	End       time.Time
+	CreatedAt time.Time
 }
 
 type UpdateTransactionParam struct {
