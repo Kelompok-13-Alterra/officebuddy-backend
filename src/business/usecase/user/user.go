@@ -19,6 +19,7 @@ type Interface interface {
 	GetById(id uint) (entity.User, error)
 	Update(ctx context.Context, inputParam entity.UpdateUserParam) error
 	GetUserList(param entity.UserParam) ([]entity.User, error)
+	UpdateByAdmin(param entity.UserParam, inputParam entity.UpdateUserParam) error
 }
 
 type user struct {
@@ -134,6 +135,14 @@ func (u *user) Update(ctx context.Context, inputParam entity.UpdateUserParam) er
 		return err
 	}
 
+	if inputParam.Password != "" {
+		hashPass, err := bcrypt.GenerateFromPassword([]byte(inputParam.Password), bcrypt.MinCost)
+		if err != nil {
+			return err
+		}
+		inputParam.Password = string(hashPass)
+	}
+
 	if inputParam.DateBirthInput != "" {
 		formatedDate, err := u.formatDate(inputParam.DateBirthInput)
 		if err != nil {
@@ -142,8 +151,8 @@ func (u *user) Update(ctx context.Context, inputParam entity.UpdateUserParam) er
 		inputParam.DateBirth = formatedDate
 	}
 
-	if err := u.user.Update(entity.UpdateUserParam{
-		Email: user.User.Email,
+	if err := u.user.Update(entity.UserParam{
+		ID: user.User.ID,
 	}, inputParam); err != nil {
 		return err
 	}
@@ -176,4 +185,28 @@ func (r *user) GetUserList(param entity.UserParam) ([]entity.User, error) {
 	}
 
 	return users, nil
+}
+
+func (u *user) UpdateByAdmin(param entity.UserParam, inputParam entity.UpdateUserParam) error {
+	if inputParam.Password != "" {
+		hashPass, err := bcrypt.GenerateFromPassword([]byte(inputParam.Password), bcrypt.MinCost)
+		if err != nil {
+			return err
+		}
+		inputParam.Password = string(hashPass)
+	}
+
+	if inputParam.DateBirthInput != "" {
+		formatedDate, err := u.formatDate(inputParam.DateBirthInput)
+		if err != nil {
+			return err
+		}
+		inputParam.DateBirth = formatedDate
+	}
+
+	if err := u.user.Update(param, inputParam); err != nil {
+		return err
+	}
+
+	return nil
 }
