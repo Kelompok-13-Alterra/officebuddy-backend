@@ -151,6 +151,7 @@ func (r *rest) Register() {
 	user.PUT("/edit", r.VerifyUser, r.UpdateUser)
 	user.GET("/me", r.VerifyUser, r.GetProfile)
 	user.GET("", r.VerifyUser, r.VerifyAdmin, r.GetUserList)
+	user.PUT("/edit/:user_id", r.VerifyUser, r.VerifyAdmin, r.UpdateUserByAdmin)
 
 	office := v1.Group("/office")
 	office.POST("", r.VerifyUser, r.VerifyAdmin, r.CreateOffice)

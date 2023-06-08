@@ -41,7 +41,7 @@ type UpdateUserParam struct {
 }
 
 type UserParam struct {
-	ID uint
+	ID uint `json:"-" uri:"user_id"`
 }
 
 func (u *User) ConvertToAuthUser() auth.User {
