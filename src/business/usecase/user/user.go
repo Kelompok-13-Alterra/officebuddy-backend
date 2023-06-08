@@ -135,9 +135,12 @@ func (u *user) Update(ctx context.Context, inputParam entity.UpdateUserParam) er
 		return err
 	}
 
-	hashPass, err := bcrypt.GenerateFromPassword([]byte(inputParam.Password), bcrypt.MinCost)
-	if err != nil {
-		return err
+	if inputParam.Password != "" {
+		hashPass, err := bcrypt.GenerateFromPassword([]byte(inputParam.Password), bcrypt.MinCost)
+		if err != nil {
+			return err
+		}
+		inputParam.Password = string(hashPass)
 	}
 
 	if inputParam.DateBirthInput != "" {
@@ -147,8 +150,6 @@ func (u *user) Update(ctx context.Context, inputParam entity.UpdateUserParam) er
 		}
 		inputParam.DateBirth = formatedDate
 	}
-
-	inputParam.Password = string(hashPass)
 
 	if err := u.user.Update(entity.UserParam{
 		ID: user.User.ID,
@@ -187,12 +188,13 @@ func (r *user) GetUserList(param entity.UserParam) ([]entity.User, error) {
 }
 
 func (u *user) UpdateByAdmin(param entity.UserParam, inputParam entity.UpdateUserParam) error {
-	hashPass, err := bcrypt.GenerateFromPassword([]byte(inputParam.Password), bcrypt.MinCost)
-	if err != nil {
-		return err
+	if inputParam.Password != "" {
+		hashPass, err := bcrypt.GenerateFromPassword([]byte(inputParam.Password), bcrypt.MinCost)
+		if err != nil {
+			return err
+		}
+		inputParam.Password = string(hashPass)
 	}
-
-	inputParam.Password = string(hashPass)
 
 	if inputParam.DateBirthInput != "" {
 		formatedDate, err := u.formatDate(inputParam.DateBirthInput)
