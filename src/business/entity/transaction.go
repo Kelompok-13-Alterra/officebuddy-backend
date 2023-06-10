@@ -17,6 +17,7 @@ type Transaction struct {
 	Start      time.Time
 	End        time.Time
 	Status     bool
+	Office     Office `gorm:"-:all"`
 }
 
 type TransactionParam struct {
