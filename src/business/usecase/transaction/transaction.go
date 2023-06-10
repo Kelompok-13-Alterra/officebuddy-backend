@@ -24,6 +24,7 @@ type Interface interface {
 	GetListHistoryBooked(ctx context.Context) ([]entity.Transaction, error)
 	RescheduleBooked(ctx context.Context, param entity.InputUpdateTransactionParam, selectParam entity.TransactionParam) error
 	ValidateTransaction(ctx context.Context, transactionID uint, userID uint) error
+	AvailabilityCheck(param entity.AvailabilityCheckTransactionParam) error
 }
 
 type transaction struct {
@@ -141,6 +142,28 @@ func (t *transaction) Create(ctx context.Context, param entity.CreateTransaction
 	}
 
 	return transaction.ID, nil
+}
+
+func (t *transaction) AvailabilityCheck(param entity.AvailabilityCheckTransactionParam) error {
+	startDate, endDate, err := t.formatDate(param.Start, param.End)
+	if err != nil {
+		return err
+	}
+
+	transactionExist, err := t.transaction.GetAvaibility(entity.TransactionParam{
+		Start:    startDate,
+		End:      endDate,
+		OfficeID: param.OfficeID,
+	})
+	if err != nil {
+		return err
+	}
+
+	if transactionExist.ID != 0 {
+		return errors.New("tanggal tidak tersedia")
+	}
+
+	return nil
 }
 
 func (t *transaction) getPaymentData(paymentId string, coreApiRes *coreapi.ChargeResponse, totalPrice, price, discount, tax int) (entity.PaymentData, error) {

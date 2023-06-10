@@ -41,6 +41,40 @@ func (r *rest) CreateOrder(ctx *gin.Context) {
 	r.httpRespSuccess(ctx, http.StatusCreated, "successfully created new order", gin.H{"id_transaction": id})
 }
 
+// @Summary Availability Check
+// @Description Availability Check for new Transaction
+// @Security BearerAuth
+// @Tags Transaction
+// @Param office_id path integer true "office id"
+// @Param transaction body entity.AvailabilityCheckTransactionParam true "transaction info"
+// @Produce json
+// @Success 200 {object} entity.Response{}
+// @Failure 400 {object} entity.Response{}
+// @Failure 401 {object} entity.Response{}
+// @Failure 404 {object} entity.Response{}
+// @Failure 500 {object} entity.Response{}
+// @Router /api/v1/transaction/office/{office_id}/availability-check [POST]
+func (r *rest) AvailabilityCheck(ctx *gin.Context) {
+	var inputParam entity.AvailabilityCheckTransactionParam
+	if err := ctx.ShouldBindJSON(&inputParam); err != nil {
+		r.httpRespError(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	if err := ctx.ShouldBindUri(&inputParam); err != nil {
+		r.httpRespError(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	err := r.uc.Transaction.AvailabilityCheck(inputParam)
+	if err != nil {
+		r.httpRespError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	r.httpRespSuccess(ctx, http.StatusCreated, "tanggal tersedia", nil)
+}
+
 // @Summary Reschedule Transaction
 // @Description Reschedule transaction
 // @Security BearerAuth
