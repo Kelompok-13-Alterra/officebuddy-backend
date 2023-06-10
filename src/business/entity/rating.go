@@ -11,7 +11,7 @@ type Rating struct {
 	UserID        uint
 	OfficeID      uint
 	TransactionID uint
-	Star          int
+	Star          float32
 	Tags          string
 	Description   string
 }
@@ -21,7 +21,7 @@ type RatingResponse struct {
 	UserID        uint
 	OfficeID      uint
 	TransactionID uint
-	Star          int
+	Star          float32
 	Tags          []string
 	Description   string
 	CreatedAt     time.Time
@@ -36,7 +36,7 @@ type RatingParam struct {
 
 type CreateRatingParam struct {
 	TransactionID uint     `json:"-" uri:"transaction_id"`
-	Star          int      `binding:"required"`
+	Star          float32  `binding:"required"`
 	Tags          []string `binding:"required"`
 	Description   string   `binding:"required"`
 }
