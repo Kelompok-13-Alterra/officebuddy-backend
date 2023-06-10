@@ -46,3 +46,9 @@ type CreateTransactionParam struct {
 	End       string `binding:"required"`
 	PaymentID string `binding:"required"`
 }
+
+type AvailabilityCheckTransactionParam struct {
+	OfficeID uint   `json:"-" uri:"office_id"`
+	Start    string `binding:"required"`
+	End      string `binding:"required"`
+}
