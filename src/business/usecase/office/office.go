@@ -94,6 +94,22 @@ func (o *office) Get(param entity.OfficeParam) (entity.Office, error) {
 }
 
 func (o *office) Update(param entity.OfficeParam, inputParam entity.UpdateOfficeParam) error {
+	if inputParam.OpenHours != "" {
+		openTime, err := o.convertStringToOfficeHours(inputParam.OpenHours)
+		if err != nil {
+			return err
+		}
+		inputParam.Open = openTime
+	}
+
+	if inputParam.CloseHours != "" {
+		closeTime, err := o.convertStringToOfficeHours(inputParam.CloseHours)
+		if err != nil {
+			return err
+		}
+		inputParam.Close = closeTime
+	}
+
 	if err := o.office.Update(param, inputParam); err != nil {
 		return err
 	}

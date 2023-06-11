@@ -24,7 +24,6 @@ type Office struct {
 	Price       int
 	Location    string
 	Facilities  string
-	Status      bool
 }
 
 type OfficeHours struct {
@@ -88,10 +87,11 @@ type UpdateOfficeParam struct {
 	Name        string
 	Description string
 	Capacity    int
-	Open        string
-	Close       string
+	Open        OfficeHours `json:"-"`
+	OpenHours   string
+	Close       OfficeHours `json:"-"`
+	CloseHours  string
 	Location    string
 	Price       int
 	Facilities  string
-	Status      bool
 }
