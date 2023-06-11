@@ -152,7 +152,7 @@ func (r *rest) Register() {
 	user.GET("/me", r.VerifyUser, r.GetProfile)
 	user.GET("", r.VerifyUser, r.VerifyAdmin, r.GetUserList)
 	user.PUT("/edit/:user_id", r.VerifyUser, r.VerifyAdmin, r.UpdateUserByAdmin)
-	user.DELETE("", r.VerifyUser, r.VerifyAdmin, r.DeleteUser)
+	user.DELETE("/:user_id", r.VerifyUser, r.VerifyAdmin, r.DeleteUser)
 
 	office := v1.Group("/office")
 	office.POST("", r.VerifyUser, r.VerifyAdmin, r.CreateOffice)
