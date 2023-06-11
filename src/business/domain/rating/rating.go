@@ -10,6 +10,7 @@ type Interface interface {
 	Create(rating entity.Rating) (entity.Rating, error)
 	GetList(param entity.RatingParam) ([]entity.Rating, error)
 	Get(param entity.RatingParam) (entity.Rating, error)
+	GetCountInByID(ids []uint) (int64, error)
 	Delete(param entity.RatingParam) error
 }
 
@@ -51,6 +52,15 @@ func (r *rating) Get(param entity.RatingParam) (entity.Rating, error) {
 	}
 
 	return rating, nil
+}
+
+func (r *rating) GetCountInByID(ids []uint) (int64, error) {
+	var result int64
+	if err := r.db.Model(entity.Rating{}).Where("office_id IN ?", ids).Count(&result).Error; err != nil {
+		return result, err
+	}
+
+	return result, nil
 }
 
 func (t *rating) Delete(param entity.RatingParam) error {

@@ -2,24 +2,29 @@ package widget_analytic
 
 import (
 	"context"
+	"errors"
 	officeDom "go-clean/src/business/domain/office"
+	ratingDom "go-clean/src/business/domain/rating"
 	transactionDom "go-clean/src/business/domain/transaction"
 	"go-clean/src/business/entity"
 )
 
 type Interface interface {
 	GetDashboardWidget(ctx context.Context) (entity.DashboardWidgetResult, error)
+	GetOfficeWidget(ctx context.Context, param entity.OfficeWidgetParam) (entity.OfficeWidgetResult, error)
 }
 
 type widgetAnalytic struct {
 	office      officeDom.Interface
 	transaction transactionDom.Interface
+	rating      ratingDom.Interface
 }
 
-func Init(od officeDom.Interface, td transactionDom.Interface) Interface {
+func Init(od officeDom.Interface, td transactionDom.Interface, rd ratingDom.Interface) Interface {
 	w := &widgetAnalytic{
 		office:      od,
 		transaction: td,
+		rating:      rd,
 	}
 	return w
 }
@@ -79,6 +84,57 @@ func (wa *widgetAnalytic) GetDashboardWidget(ctx context.Context) (entity.Dashbo
 
 	result.CoWorkingTransactionToday = coworkingCountTrx
 	result.OfficeTransactionToday = officeCountTrx
+
+	return result, nil
+}
+
+func (wa *widgetAnalytic) GetOfficeWidget(ctx context.Context, param entity.OfficeWidgetParam) (entity.OfficeWidgetResult, error) {
+	result := entity.OfficeWidgetResult{}
+
+	if param.Type != "coworking" && param.Type != "office" {
+		return result, errors.New("tipe office tidak tersedia")
+	}
+
+	countOffice, err := wa.office.GetCount(entity.OfficeParam{
+		Type: param.Type,
+	})
+	if err != nil {
+		return result, err
+	}
+	result.OfficeCount = countOffice
+
+	offices, err := wa.office.GetList(entity.OfficeParam{
+		Type: param.Type,
+	})
+	if err != nil {
+		return result, err
+	}
+
+	officeIDsMap := make(map[uint]bool)
+	officeIDs := []uint{}
+	for _, o := range offices {
+		officeIDsMap[o.ID] = true
+		officeIDs = append(officeIDs, o.ID)
+	}
+
+	transactions, err := wa.transaction.GetTransactionToday()
+	if err != nil {
+		return result, err
+	}
+
+	transactionCount := 0
+	for _, t := range transactions {
+		if _, ok := officeIDsMap[t.OfficeID]; ok {
+			transactionCount++
+		}
+	}
+	result.TotalBooking = transactionCount
+
+	ratingCount, err := wa.rating.GetCountInByID(officeIDs)
+	if err != nil {
+		return result, err
+	}
+	result.TotalRating = ratingCount
 
 	return result, nil
 }

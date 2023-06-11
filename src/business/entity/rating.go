@@ -31,6 +31,7 @@ type RatingParam struct {
 	ID            uint `json:"-" uri:"rating_id"`
 	UserID        uint
 	OfficeID      uint
+	OfficeIDs     []uint
 	TransactionID uint
 }
 
