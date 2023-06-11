@@ -136,3 +136,18 @@ func (r *rest) GetProfile(ctx *gin.Context) {
 
 	r.httpRespSuccess(ctx, http.StatusOK, "successfully get profile", userProfile)
 }
+
+func (r *rest) DeleteUser(ctx *gin.Context) {
+	var param entity.UserParam
+	if err := ctx.ShouldBindUri(&param); err != nil {
+		r.httpRespError(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	if err := r.uc.User.Delete(param); err != nil {
+		r.httpRespError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	r.httpRespSuccess(ctx, http.StatusOK, "successfully delete an user", nil)
+}
