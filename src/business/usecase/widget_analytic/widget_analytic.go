@@ -3,6 +3,7 @@ package widget_analytic
 import (
 	"context"
 	"errors"
+	midtransTransactionDom "go-clean/src/business/domain/midtrans_transaction"
 	officeDom "go-clean/src/business/domain/office"
 	ratingDom "go-clean/src/business/domain/rating"
 	transactionDom "go-clean/src/business/domain/transaction"
@@ -12,19 +13,22 @@ import (
 type Interface interface {
 	GetDashboardWidget(ctx context.Context) (entity.DashboardWidgetResult, error)
 	GetOfficeWidget(ctx context.Context, param entity.OfficeWidgetParam) (entity.OfficeWidgetResult, error)
+	GetRevenueWidget(ctx context.Context) (entity.RevenueWidgetResult, error)
 }
 
 type widgetAnalytic struct {
-	office      officeDom.Interface
-	transaction transactionDom.Interface
-	rating      ratingDom.Interface
+	office              officeDom.Interface
+	transaction         transactionDom.Interface
+	midtransTransaction midtransTransactionDom.Interface
+	rating              ratingDom.Interface
 }
 
-func Init(od officeDom.Interface, td transactionDom.Interface, rd ratingDom.Interface) Interface {
+func Init(od officeDom.Interface, td transactionDom.Interface, rd ratingDom.Interface, mtd midtransTransactionDom.Interface) Interface {
 	w := &widgetAnalytic{
-		office:      od,
-		transaction: td,
-		rating:      rd,
+		office:              od,
+		transaction:         td,
+		midtransTransaction: mtd,
+		rating:              rd,
 	}
 	return w
 }
@@ -137,4 +141,32 @@ func (wa *widgetAnalytic) GetOfficeWidget(ctx context.Context, param entity.Offi
 	result.TotalRating = ratingCount
 
 	return result, nil
+}
+
+func (wa *widgetAnalytic) GetRevenueWidget(ctx context.Context) (entity.RevenueWidgetResult, error) {
+	result := entity.RevenueWidgetResult{}
+
+	todayTransactions, err := wa.midtransTransaction.GetMidtransTransactionToday()
+	if err != nil {
+		return result, err
+	}
+
+	totalTodayAmount := 0
+	for _, t := range todayTransactions {
+		totalTodayAmount += t.Amount
+	}
+	result.TotalTodayRevenue = int64(totalTodayAmount)
+
+	allTransactions, err := wa.midtransTransaction.GetMidtransTransactionToday()
+	if err != nil {
+		return result, err
+	}
+
+	totalAllAmount := 0
+	for _, t := range allTransactions {
+		totalAllAmount += t.Amount
+	}
+	result.TotalAllRevenue = int64(totalAllAmount)
+
+	return result, err
 }
