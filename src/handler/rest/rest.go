@@ -184,6 +184,7 @@ func (r *rest) Register() {
 	widgetAnalytic := v1.Group("")
 	widgetAnalytic.GET("/admin/dashboard-widget", r.VerifyUser, r.VerifyAdmin, r.GetDashboardWidget)
 	widgetAnalytic.GET("/admin/office-widget", r.VerifyUser, r.VerifyAdmin, r.GetOfficeWidget)
+	widgetAnalytic.GET("/admin/revenue-widget", r.VerifyUser, r.VerifyAdmin, r.GetRevenueWidget)
 }
 
 func (r *rest) registerSwaggerRoutes() {
