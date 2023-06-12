@@ -157,7 +157,7 @@ func (wa *widgetAnalytic) GetRevenueWidget(ctx context.Context) (entity.RevenueW
 	}
 	result.TotalTodayRevenue = int64(totalTodayAmount)
 
-	allTransactions, err := wa.midtransTransaction.GetMidtransTransaction()
+	allTransactions, err := wa.midtransTransaction.GetList(entity.MidtransTransactionParam{Status: entity.StatusSuccess})
 	if err != nil {
 		return result, err
 	}

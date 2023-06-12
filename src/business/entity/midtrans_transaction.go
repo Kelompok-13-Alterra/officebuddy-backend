@@ -40,6 +40,7 @@ type MidtransTransactionPaymentDetail struct {
 type MidtransTransactionParam struct {
 	TransactionID uint   `uri:"transaction_id" json:"transaction_id"`
 	OrderID       string `json:"order_id"`
+	Status        string
 }
 
 type UpdateMidtransTransactionParam struct {

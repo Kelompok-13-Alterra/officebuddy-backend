@@ -15,7 +15,6 @@ type Interface interface {
 	Update(selectParam entity.MidtransTransactionParam, updateParam entity.UpdateMidtransTransactionParam) error
 	Delete(param entity.MidtransTransactionParam) error
 	GetMidtransTransactionToday() ([]entity.MidtransTransaction, error)
-	GetMidtransTransaction() ([]entity.MidtransTransaction, error)
 }
 
 type transaction struct {
@@ -78,15 +77,6 @@ func (t *transaction) GetMidtransTransactionToday() ([]entity.MidtransTransactio
 	midtransTransaction := []entity.MidtransTransaction{}
 	currentDate := time.Now().Format("2006-01-02")
 	if err := t.db.Where("created_at LIKE ? AND status = ?", fmt.Sprintf("%%%s%%", currentDate), "success").Find(&midtransTransaction).Error; err != nil {
-		return midtransTransaction, err
-	}
-
-	return midtransTransaction, nil
-}
-
-func (t *transaction) GetMidtransTransaction() ([]entity.MidtransTransaction, error) {
-	midtransTransaction := []entity.MidtransTransaction{}
-	if err := t.db.Where("status = ?", "success").Find(&midtransTransaction).Error; err != nil {
 		return midtransTransaction, err
 	}
 
