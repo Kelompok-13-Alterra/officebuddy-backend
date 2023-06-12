@@ -252,8 +252,8 @@ func (t *transaction) GetListBooked(ctx context.Context) ([]entity.Transaction, 
 		officesMap[o.ID] = o
 	}
 
-	for _, t := range transactions {
-		t.Office = officesMap[t.OfficeID]
+	for i, t := range transactions {
+		transactions[i].Office = officesMap[t.OfficeID]
 	}
 
 	return transactions, nil
