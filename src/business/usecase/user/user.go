@@ -20,6 +20,7 @@ type Interface interface {
 	Update(ctx context.Context, inputParam entity.UpdateUserParam) error
 	GetUserList(param entity.UserParam) ([]entity.User, error)
 	UpdateByAdmin(param entity.UserParam, inputParam entity.UpdateUserParam) error
+	Delete(param entity.UserParam) error
 }
 
 type user struct {
@@ -205,6 +206,16 @@ func (u *user) UpdateByAdmin(param entity.UserParam, inputParam entity.UpdateUse
 	}
 
 	if err := u.user.Update(param, inputParam); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u *user) Delete(param entity.UserParam) error {
+	if err := u.user.Delete(entity.UserParam{
+		ID: param.ID,
+	}); err != nil {
 		return err
 	}
 
