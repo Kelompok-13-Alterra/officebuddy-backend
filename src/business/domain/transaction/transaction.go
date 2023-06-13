@@ -11,6 +11,7 @@ import (
 type Interface interface {
 	Create(transaction entity.Transaction) (entity.Transaction, error)
 	GetList(param entity.TransactionParam) ([]entity.Transaction, error)
+	GetListByIDs(ids []uint) ([]entity.Transaction, error)
 	GetListBooked(param entity.TransactionParam) ([]entity.Transaction, error)
 	GetListHistoryBooked(param entity.TransactionParam) ([]entity.Transaction, error)
 	Get(param entity.TransactionParam) (entity.Transaction, error)
@@ -44,6 +45,16 @@ func (t *transaction) GetList(param entity.TransactionParam) ([]entity.Transacti
 	transactions := []entity.Transaction{}
 
 	if err := t.db.Where(param).Find(&transactions).Error; err != nil {
+		return transactions, err
+	}
+
+	return transactions, nil
+}
+
+func (t *transaction) GetListByIDs(ids []uint) ([]entity.Transaction, error) {
+	transactions := []entity.Transaction{}
+
+	if err := t.db.Where("id IN ?", ids).Find(&transactions).Error; err != nil {
 		return transactions, err
 	}
 

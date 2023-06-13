@@ -14,6 +14,7 @@ type Interface interface {
 	Get(param entity.MidtransTransactionParam) (entity.MidtransTransaction, error)
 	Update(selectParam entity.MidtransTransactionParam, updateParam entity.UpdateMidtransTransactionParam) error
 	Delete(param entity.MidtransTransactionParam) error
+	GetListWithPaginationByIDs(param entity.MidtransTransactionParam) ([]entity.MidtransTransaction, error)
 	GetMidtransTransactionToday() ([]entity.MidtransTransaction, error)
 }
 
@@ -71,6 +72,16 @@ func (t *transaction) Delete(param entity.MidtransTransactionParam) error {
 	}
 
 	return nil
+}
+
+func (t *transaction) GetListWithPaginationByIDs(param entity.MidtransTransactionParam) ([]entity.MidtransTransaction, error) {
+	transactions := []entity.MidtransTransaction{}
+
+	if err := t.db.Limit(param.Limit).Offset(param.Offset).Where(param).Order(param.OrderBy).Find(&transactions).Error; err != nil {
+		return transactions, err
+	}
+
+	return transactions, nil
 }
 
 func (t *transaction) GetMidtransTransactionToday() ([]entity.MidtransTransaction, error) {

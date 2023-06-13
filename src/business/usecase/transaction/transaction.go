@@ -4,13 +4,16 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	midtransDom "go-clean/src/business/domain/midtrans"
 	midtransTransactionDom "go-clean/src/business/domain/midtrans_transaction"
 	officeDom "go-clean/src/business/domain/office"
 	transactionDom "go-clean/src/business/domain/transaction"
+	userDom "go-clean/src/business/domain/user"
 	"go-clean/src/business/entity"
 	"go-clean/src/lib/auth"
 	"go-clean/src/lib/midtrans"
+	"go-clean/src/lib/timeutils"
 	"strconv"
 	"time"
 
@@ -25,6 +28,7 @@ type Interface interface {
 	RescheduleBooked(ctx context.Context, param entity.InputUpdateTransactionParam, selectParam entity.TransactionParam) error
 	ValidateTransaction(ctx context.Context, transactionID uint, userID uint) error
 	AvailabilityCheck(param entity.AvailabilityCheckTransactionParam) error
+	GetLastTransactionList(param entity.MidtransTransactionParam) ([]entity.LastTranasctionResult, error)
 }
 
 type transaction struct {
@@ -33,15 +37,17 @@ type transaction struct {
 	office              officeDom.Interface
 	midtrans            midtransDom.Interface
 	midtransTransaction midtransTransactionDom.Interface
+	user                userDom.Interface
 }
 
-func Init(td transactionDom.Interface, auth auth.Interface, od officeDom.Interface, md midtransDom.Interface, mtd midtransTransactionDom.Interface) Interface {
+func Init(td transactionDom.Interface, auth auth.Interface, od officeDom.Interface, md midtransDom.Interface, mtd midtransTransactionDom.Interface, ud userDom.Interface) Interface {
 	t := &transaction{
 		transaction:         td,
 		auth:                auth,
 		office:              od,
 		midtrans:            md,
 		midtransTransaction: mtd,
+		user:                ud,
 	}
 
 	return t
@@ -355,4 +361,85 @@ func (t *transaction) ValidateTransaction(ctx context.Context, transactionID uin
 	}
 
 	return nil
+}
+
+func (t *transaction) GetLastTransactionList(param entity.MidtransTransactionParam) ([]entity.LastTranasctionResult, error) {
+	result := []entity.LastTranasctionResult{}
+
+	mTransactions, err := t.midtransTransaction.GetListWithPaginationByIDs(entity.MidtransTransactionParam{
+		Status:  entity.StatusSuccess,
+		Limit:   param.Limit,
+		Offset:  (param.Page - 1) * param.Limit,
+		OrderBy: "id desc",
+	})
+	if err != nil {
+		return result, err
+	}
+
+	transactionIDs := []uint{}
+	for _, mt := range mTransactions {
+		transactionIDs = append(transactionIDs, mt.TransactionID)
+	}
+
+	transactions, err := t.transaction.GetListByIDs(transactionIDs)
+	if err != nil {
+		return result, err
+	}
+
+	userIdsMap := make(map[uint]bool)
+	transactionMap := make(map[uint]entity.Transaction)
+	officeIDsMap := make(map[uint]bool)
+	for _, t := range transactions {
+		transactionMap[t.ID] = t
+		userIdsMap[t.UserID] = true
+		officeIDsMap[t.OfficeID] = true
+	}
+
+	userIds := []uint{}
+	for id := range userIdsMap {
+		userIds = append(userIds, id)
+	}
+
+	users, err := t.user.GetListByIDs(userIds)
+	if err != nil {
+		return result, err
+	}
+
+	userMap := make(map[uint]entity.User)
+	for _, u := range users {
+		userMap[u.ID] = u
+	}
+
+	officeIDs := []uint{}
+	for id := range officeIDsMap {
+		officeIDs = append(officeIDs, id)
+	}
+
+	offices, err := t.office.GetListByID(officeIDs)
+	if err != nil {
+		return result, err
+	}
+
+	officesMap := make(map[uint]entity.Office)
+	for _, o := range offices {
+		officesMap[o.ID] = o
+	}
+
+	for _, mt := range mTransactions {
+		officeType := ""
+		office := officesMap[transactionMap[mt.TransactionID].OfficeID]
+		if office.Type == entity.CoWorkingType {
+			officeType = "Coworking Space"
+		} else {
+			officeType = "Office"
+		}
+		result = append(result, entity.LastTranasctionResult{
+			BuyerName:   userMap[transactionMap[mt.TransactionID].UserID].Name,
+			Description: fmt.Sprintf("Memesan %s %s", officeType, office.Name),
+			Revenue:     mt.Amount,
+			Date:        timeutils.DiffForHumans(mt.CreatedAt),
+		})
+	}
+
+	return result, nil
 }

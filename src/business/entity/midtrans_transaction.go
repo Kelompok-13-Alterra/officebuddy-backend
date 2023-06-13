@@ -41,6 +41,10 @@ type MidtransTransactionParam struct {
 	TransactionID uint   `uri:"transaction_id" json:"transaction_id"`
 	OrderID       string `json:"order_id"`
 	Status        string
+	Limit         int    `form:"limit" gorm:"-" json:"-"`
+	Page          int    `form:"page" gorm:"-" json:"-"`
+	OrderBy       string `gorm:"-" json:"-"`
+	Offset        int    `gorm:"-" json:"-"`
 }
 
 type UpdateMidtransTransactionParam struct {

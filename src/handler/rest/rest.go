@@ -169,6 +169,7 @@ func (r *rest) Register() {
 	transaction.GET("/:transaction_id/payment-detail", r.VerifyUser, r.VerifyTransaction, r.GetPaymentDetail)
 	transaction.PUT("/:transaction_id/reschedule", r.VerifyUser, r.VerifyTransaction, r.RescheduleBooked)
 	transaction.GET("", r.VerifyUser, r.VerifyAdmin, r.GetTransactionList)
+	transaction.GET("/last", r.VerifyUser, r.VerifyAdmin, r.GetLastTransactionList)
 
 	notification := v1.Group("/notification")
 	notification.GET("", r.VerifyUser, r.GetNotificationList)

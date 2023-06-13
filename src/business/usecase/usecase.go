@@ -26,7 +26,7 @@ func Init(auth auth.Interface, d *domain.Domains) *Usecase {
 	uc := &Usecase{
 		User:                user.Init(d.User, auth),
 		Office:              office.Init(d.Office),
-		Transaction:         transaction.Init(d.Transaction, auth, d.Office, d.Midtrans, d.MidtransTransaction),
+		Transaction:         transaction.Init(d.Transaction, auth, d.Office, d.Midtrans, d.MidtransTransaction, d.User),
 		Notification:        notification.Init(d.Notification, auth),
 		Rating:              rating.Init(d.Rating, d.Transaction, auth),
 		MidtransTransaction: midtrans_transaction.Init(d.MidtransTransaction, d.Midtrans),
