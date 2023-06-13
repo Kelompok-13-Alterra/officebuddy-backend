@@ -30,7 +30,7 @@ func Init(auth auth.Interface, d *domain.Domains) *Usecase {
 		Notification:        notification.Init(d.Notification, auth),
 		Rating:              rating.Init(d.Rating, d.Transaction, auth),
 		MidtransTransaction: midtrans_transaction.Init(d.MidtransTransaction, d.Midtrans),
-		WidgetDashboard:     widget_analytic.Init(d.Office, d.Transaction, d.Rating),
+		WidgetDashboard:     widget_analytic.Init(d.Office, d.Transaction, d.Rating, d.MidtransTransaction),
 	}
 
 	return uc

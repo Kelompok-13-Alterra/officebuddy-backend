@@ -56,3 +56,24 @@ func (r *rest) GetOfficeWidget(ctx *gin.Context) {
 
 	r.httpRespSuccess(ctx, http.StatusOK, "successfully get office widget", result)
 }
+
+// @Summary Get Revenue Widget
+// @Description Get Revenue Widget for Admin
+// @Security BearerAuth
+// @Tags Widget Analytic
+// @Produce json
+// @Success 200 {object} entity.Response{data=entity.RevenueWidgetResult}
+// @Failure 400 {object} entity.Response{}
+// @Failure 401 {object} entity.Response{}
+// @Failure 404 {object} entity.Response{}
+// @Failure 500 {object} entity.Response{}
+// @Router /api/v1/admin/revenue-widget [GET]
+func (r *rest) GetRevenueWidget(ctx *gin.Context) {
+	result, err := r.uc.WidgetDashboard.GetRevenueWidget(ctx.Request.Context())
+	if err != nil {
+		r.httpRespError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	r.httpRespSuccess(ctx, http.StatusOK, "successfully get revenue widget", result)
+}

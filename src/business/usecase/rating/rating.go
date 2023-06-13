@@ -15,6 +15,7 @@ type Interface interface {
 	Create(ctx context.Context, param entity.CreateRatingParam) (entity.Rating, error)
 	GetList(param entity.RatingParam) ([]entity.RatingResponse, error)
 	Get(param entity.RatingParam) (entity.RatingResponse, error)
+	Delete(param entity.RatingParam) error
 }
 
 type rating struct {
@@ -132,4 +133,14 @@ func (r *rating) Get(param entity.RatingParam) (entity.RatingResponse, error) {
 	}
 
 	return result, nil
+}
+
+func (o *rating) Delete(param entity.RatingParam) error {
+	if err := o.rating.Delete(entity.RatingParam{
+		ID: param.ID,
+	}); err != nil {
+		return err
+	}
+
+	return nil
 }

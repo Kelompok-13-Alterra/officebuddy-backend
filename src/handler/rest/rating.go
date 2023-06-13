@@ -40,3 +40,18 @@ func (r *rest) CreateRating(ctx *gin.Context) {
 
 	r.httpRespSuccess(ctx, http.StatusCreated, "successfully created rating", rating)
 }
+
+func (r *rest) DeleteRating(ctx *gin.Context) {
+	var param entity.RatingParam
+	if err := ctx.ShouldBindUri(&param); err != nil {
+		r.httpRespError(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	if err := r.uc.Rating.Delete(param); err != nil {
+		r.httpRespError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	r.httpRespSuccess(ctx, http.StatusOK, "successfully delete an rating", nil)
+}
