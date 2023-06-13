@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 )
 
 // @Summary Create Order
@@ -165,6 +166,35 @@ func (r *rest) GetTransactionHistoryBookedList(ctx *gin.Context) {
 // @Router /api/v1/transaction [GET]
 func (r *rest) GetTransactionList(ctx *gin.Context) {
 	transaction, err := r.uc.Transaction.GetTransactionList(entity.TransactionParam{})
+	if err != nil {
+		r.httpRespError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	r.httpRespSuccess(ctx, http.StatusCreated, "successfully get transaction list", transaction)
+}
+
+// @Summary Get Last Transaction
+// @Description Get Last Transaction for Admin
+// @Security BearerAuth
+// @Tags Transaction
+// @Produce json
+// @Param limit query integer true "limit"
+// @Param page query integer true "page"
+// @Success 200 {object} entity.Response{data=[]entity.LastTranasctionResult}
+// @Failure 400 {object} entity.Response{}
+// @Failure 401 {object} entity.Response{}
+// @Failure 404 {object} entity.Response{}
+// @Failure 500 {object} entity.Response{}
+// @Router /api/v1/transaction/last [GET]
+func (r *rest) GetLastTransactionList(ctx *gin.Context) {
+	var param entity.MidtransTransactionParam
+	if err := ctx.ShouldBindWith(&param, binding.Query); err != nil {
+		r.httpRespError(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	transaction, err := r.uc.Transaction.GetLastTransactionList(param)
 	if err != nil {
 		r.httpRespError(ctx, http.StatusInternalServerError, err)
 		return

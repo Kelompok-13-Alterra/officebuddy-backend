@@ -52,3 +52,10 @@ type AvailabilityCheckTransactionParam struct {
 	Start    string `binding:"required"`
 	End      string `binding:"required"`
 }
+
+type LastTranasctionResult struct {
+	BuyerName   string
+	Description string
+	Revenue     int
+	Date        string
+}
