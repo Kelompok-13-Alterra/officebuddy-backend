@@ -56,6 +56,17 @@ func (r *rest) GetRating(ctx *gin.Context) {
 	r.httpRespSuccess(ctx, http.StatusOK, "successfull get rating detail", rating)
 }
 
+// @Summary Get User List
+// @Description Get User List
+// @Security BearerAuth
+// @Tags User
+// @Produce json
+// @Success 200 {object} entity.Response{data=[]entity.User{}}
+// @Failure 400 {object} entity.Response{}
+// @Failure 401 {object} entity.Response{}
+// @Failure 404 {object} entity.Response{}
+// @Failure 500 {object} entity.Response{}
+// @Router /api/v1/user [GET]
 func (r *rest) GetUserList(ctx *gin.Context) {
 	user, err := r.uc.User.GetUserList(entity.UserParam{})
 	if err != nil {
