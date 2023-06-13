@@ -41,6 +41,18 @@ func (r *rest) CreateRating(ctx *gin.Context) {
 	r.httpRespSuccess(ctx, http.StatusCreated, "successfully created rating", rating)
 }
 
+// @Summary Delete Rating
+// @Description Delete a Rating by Admin
+// @Security BearerAuth
+// @Tags Rating
+// @Param rating_id path integer true "rating id"
+// @Produce json
+// @Success 200 {object} entity.Response{}
+// @Failure 400 {object} entity.Response{}
+// @Failure 401 {object} entity.Response{}
+// @Failure 404 {object} entity.Response{}
+// @Failure 500 {object} entity.Response{}
+// @Router /api/v1/rating/{rating_id} [DELETE]
 func (r *rest) DeleteRating(ctx *gin.Context) {
 	var param entity.RatingParam
 	if err := ctx.ShouldBindUri(&param); err != nil {
