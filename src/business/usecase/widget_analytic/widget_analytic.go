@@ -7,6 +7,7 @@ import (
 	officeDom "go-clean/src/business/domain/office"
 	ratingDom "go-clean/src/business/domain/rating"
 	transactionDom "go-clean/src/business/domain/transaction"
+	userDom "go-clean/src/business/domain/user"
 	"go-clean/src/business/entity"
 )
 
@@ -14,6 +15,7 @@ type Interface interface {
 	GetDashboardWidget(ctx context.Context) (entity.DashboardWidgetResult, error)
 	GetOfficeWidget(ctx context.Context, param entity.OfficeWidgetParam) (entity.OfficeWidgetResult, error)
 	GetRevenueWidget(ctx context.Context) (entity.RevenueWidgetResult, error)
+	GetUserWidget(ctx context.Context) (entity.UserWidgetResult, error)
 }
 
 type widgetAnalytic struct {
@@ -21,14 +23,16 @@ type widgetAnalytic struct {
 	transaction         transactionDom.Interface
 	midtransTransaction midtransTransactionDom.Interface
 	rating              ratingDom.Interface
+	user                userDom.Interface
 }
 
-func Init(od officeDom.Interface, td transactionDom.Interface, rd ratingDom.Interface, mtd midtransTransactionDom.Interface) Interface {
+func Init(od officeDom.Interface, td transactionDom.Interface, rd ratingDom.Interface, mtd midtransTransactionDom.Interface, ud userDom.Interface) Interface {
 	w := &widgetAnalytic{
 		office:              od,
 		transaction:         td,
 		midtransTransaction: mtd,
 		rating:              rd,
+		user:                ud,
 	}
 	return w
 }
@@ -169,4 +173,22 @@ func (wa *widgetAnalytic) GetRevenueWidget(ctx context.Context) (entity.RevenueW
 	result.TotalAllRevenue = int64(totalAllAmount)
 
 	return result, err
+}
+
+func (wa *widgetAnalytic) GetUserWidget(ctx context.Context) (entity.UserWidgetResult, error) {
+	result := entity.UserWidgetResult{}
+
+	userCount, err := wa.user.GetCount()
+	if err != nil {
+		return result, err
+	}
+	result.TotalUser = userCount
+
+	ratingCount, err := wa.rating.GetCount()
+	if err != nil {
+		return result, err
+	}
+	result.TotalRating = ratingCount
+
+	return result, nil
 }

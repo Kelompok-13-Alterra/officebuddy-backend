@@ -12,6 +12,7 @@ type Interface interface {
 	GetById(id uint) (entity.User, error)
 	GetList(param entity.UserParam) ([]entity.User, error)
 	GetListByIDs(ids []uint) ([]entity.User, error)
+	GetCount() (int64, error)
 	Update(selectParam entity.UserParam, updateParam entity.UpdateUserParam) error
 	Delete(param entity.UserParam) error
 }
@@ -74,6 +75,15 @@ func (u *user) GetListByIDs(ids []uint) ([]entity.User, error) {
 	}
 
 	return users, nil
+}
+
+func (u *user) GetCount() (int64, error) {
+	var result int64
+	if err := u.db.Model(entity.User{}).Count(&result).Error; err != nil {
+		return result, err
+	}
+
+	return result, nil
 }
 
 func (o *user) Update(selectParam entity.UserParam, updateParam entity.UpdateUserParam) error {
