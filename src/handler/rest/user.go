@@ -137,6 +137,18 @@ func (r *rest) GetProfile(ctx *gin.Context) {
 	r.httpRespSuccess(ctx, http.StatusOK, "successfully get profile", userProfile)
 }
 
+// @Summary Delete User
+// @Description Delete a User by Admin
+// @Security BearerAuth
+// @Tags User
+// @Param user_id path integer true "user id"
+// @Produce json
+// @Success 200 {object} entity.Response{}
+// @Failure 400 {object} entity.Response{}
+// @Failure 401 {object} entity.Response{}
+// @Failure 404 {object} entity.Response{}
+// @Failure 500 {object} entity.Response{}
+// @Router /api/v1/user/{user_id} [DELETE]
 func (r *rest) DeleteUser(ctx *gin.Context) {
 	var param entity.UserParam
 	if err := ctx.ShouldBindUri(&param); err != nil {

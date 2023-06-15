@@ -18,6 +18,11 @@ type RevenueWidgetResult struct {
 	TotalAllRevenue   int64
 }
 
+type UserWidgetResult struct {
+	TotalUser   int64
+	TotalRating int64
+}
+
 type OfficeWidgetParam struct {
 	Type string `form:"type" binding:"required"`
 }

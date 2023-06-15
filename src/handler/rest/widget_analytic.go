@@ -77,3 +77,24 @@ func (r *rest) GetRevenueWidget(ctx *gin.Context) {
 
 	r.httpRespSuccess(ctx, http.StatusOK, "successfully get revenue widget", result)
 }
+
+// @Summary Get User Widget
+// @Description Get User Widget for Admin
+// @Security BearerAuth
+// @Tags Widget Analytic
+// @Produce json
+// @Success 200 {object} entity.Response{data=entity.UserWidgetResult{}}
+// @Failure 400 {object} entity.Response{}
+// @Failure 401 {object} entity.Response{}
+// @Failure 404 {object} entity.Response{}
+// @Failure 500 {object} entity.Response{}
+// @Router /api/v1/admin/user-widget [GET]
+func (r *rest) GetUserWidget(ctx *gin.Context) {
+	result, err := r.uc.WidgetDashboard.GetUserWidget(ctx.Request.Context())
+	if err != nil {
+		r.httpRespError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	r.httpRespSuccess(ctx, http.StatusOK, "successfully get user widget", result)
+}
