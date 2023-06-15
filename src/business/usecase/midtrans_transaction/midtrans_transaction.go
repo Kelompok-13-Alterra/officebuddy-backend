@@ -5,6 +5,8 @@ import (
 	"errors"
 	midtransDom "go-clean/src/business/domain/midtrans"
 	midtransTransactionDom "go-clean/src/business/domain/midtrans_transaction"
+	officeDom "go-clean/src/business/domain/office"
+	transactionDom "go-clean/src/business/domain/transaction"
 	"go-clean/src/business/entity"
 )
 
@@ -14,13 +16,17 @@ type Interface interface {
 }
 
 type midtransTransaction struct {
+	transaction         transactionDom.Interface
 	midtransTransaction midtransTransactionDom.Interface
 	midtrans            midtransDom.Interface
+	office              officeDom.Interface
 }
 
-func Init(mttd midtransTransactionDom.Interface, md midtransDom.Interface) Interface {
+func Init(td transactionDom.Interface, od officeDom.Interface, mtd midtransTransactionDom.Interface, md midtransDom.Interface) Interface {
 	mtt := &midtransTransaction{
-		midtransTransaction: mttd,
+		transaction:         td,
+		office:              od,
+		midtransTransaction: mtd,
 		midtrans:            md,
 	}
 
@@ -40,9 +46,20 @@ func (mtt *midtransTransaction) GetPaymentDetail(param entity.MidtransTransactio
 		return result, err
 	}
 
+	transaction, err := mtt.transaction.Get(entity.TransactionParam{ID: midtransTransaction.TransactionID})
+	if err != nil {
+		return result, err
+	}
+
+	office, err := mtt.office.Get(entity.OfficeParam{ID: transaction.OfficeID})
+	if err != nil {
+		return result, err
+	}
+
 	result.Status = midtransTransaction.Status
 	result.PaymentData = paymentData
 	result.PaymentType = midtransTransaction.PaymentType
+	result.Office = office
 
 	return result, nil
 }
