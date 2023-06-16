@@ -23,8 +23,7 @@ type midtransTransaction struct {
 	midtransTransaction midtransTransactionDom.Interface
 	midtrans            midtransDom.Interface
 	notification        notificationDom.Interface
-	transaction         transactionDom.Interface
-  office              officeDom.Interface
+	office              officeDom.Interface
 }
 
 func Init(td transactionDom.Interface, od officeDom.Interface, mtd midtransTransactionDom.Interface, md midtransDom.Interface, nd notificationDom.Interface) Interface {
@@ -33,8 +32,7 @@ func Init(td transactionDom.Interface, od officeDom.Interface, mtd midtransTrans
 		office:              od,
 		midtransTransaction: mtd,
 		midtrans:            md,
-		transaction:         td,
-    notification:        nd,
+		notification:        nd,
 	}
 
 	return mtt
