@@ -3,9 +3,11 @@ package user
 import (
 	"context"
 	"errors"
+	notificationDom "go-clean/src/business/domain/notification"
 	userDom "go-clean/src/business/domain/user"
 	"go-clean/src/business/entity"
 	auth "go-clean/src/lib/auth"
+	"log"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -24,14 +26,16 @@ type Interface interface {
 }
 
 type user struct {
-	user userDom.Interface
-	auth auth.Interface
+	user         userDom.Interface
+	auth         auth.Interface
+	notification notificationDom.Interface
 }
 
-func Init(ad userDom.Interface, auth auth.Interface) Interface {
+func Init(ad userDom.Interface, auth auth.Interface, nd notificationDom.Interface) Interface {
 	a := &user{
-		user: ad,
-		auth: auth,
+		user:         ad,
+		auth:         auth,
+		notification: nd,
 	}
 
 	return a
@@ -56,6 +60,26 @@ func (a *user) Create(params entity.CreateUserParam) (entity.User, error) {
 	newUser, err := a.user.Create(user)
 	if err != nil {
 		return newUser, err
+	}
+
+	_, err = a.notification.Create(entity.Notification{
+		UserID:      newUser.ID,
+		Description: "Selamat Datang di <b>Office Buddy</b>",
+		Status:      entity.WelcomeStatus,
+		IsRead:      false,
+	})
+	if err != nil {
+		log.Println("failed to create notification")
+	}
+
+	_, err = a.notification.Create(entity.Notification{
+		UserID:      newUser.ID,
+		Description: "Mulai lakukan <b>pemesanan kantor atau co-working space</b> pertama kamu!",
+		Status:      entity.FirstOrderStatus,
+		IsRead:      false,
+	})
+	if err != nil {
+		log.Println("failed to create notification")
 	}
 
 	return newUser, nil

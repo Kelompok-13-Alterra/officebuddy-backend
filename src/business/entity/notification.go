@@ -4,16 +4,24 @@ import (
 	"gorm.io/gorm"
 )
 
+const (
+	WelcomeStatus    = "welcome"
+	FirstOrderStatus = "firstorder"
+	ProcessingStatus = "processing"
+	SuccessStatus    = "success"
+)
+
 type Notification struct {
 	gorm.Model
-	OfficeID uint
-	UserID   uint
-	Step     string
-	Status   bool
+	UserID      uint
+	Description string
+	Status      string
+	IsRead      bool
 }
 
 type NotificationParam struct {
 	ID       uint
 	UserID   uint
 	OfficeID uint
+	OrderBy  string `gorm:"-"`
 }
