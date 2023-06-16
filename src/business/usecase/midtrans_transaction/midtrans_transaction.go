@@ -3,11 +3,14 @@ package midtrans_transaction
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	midtransDom "go-clean/src/business/domain/midtrans"
 	midtransTransactionDom "go-clean/src/business/domain/midtrans_transaction"
+	notificationDom "go-clean/src/business/domain/notification"
 	officeDom "go-clean/src/business/domain/office"
 	transactionDom "go-clean/src/business/domain/transaction"
 	"go-clean/src/business/entity"
+	"log"
 )
 
 type Interface interface {
@@ -19,15 +22,17 @@ type midtransTransaction struct {
 	transaction         transactionDom.Interface
 	midtransTransaction midtransTransactionDom.Interface
 	midtrans            midtransDom.Interface
+	notification        notificationDom.Interface
 	office              officeDom.Interface
 }
 
-func Init(td transactionDom.Interface, od officeDom.Interface, mtd midtransTransactionDom.Interface, md midtransDom.Interface) Interface {
+func Init(td transactionDom.Interface, od officeDom.Interface, mtd midtransTransactionDom.Interface, md midtransDom.Interface, nd notificationDom.Interface) Interface {
 	mtt := &midtransTransaction{
 		transaction:         td,
 		office:              od,
 		midtransTransaction: mtd,
 		midtrans:            md,
+		notification:        nd,
 	}
 
 	return mtt
@@ -110,6 +115,38 @@ func (mtt *midtransTransaction) HandleNotification(payload map[string]interface{
 		Status: status,
 	}); err != nil {
 		return err
+	}
+
+	var transactionId uint
+	_, err = fmt.Sscanf(orderId, "OB-%d-00000000", &transactionId)
+	if err != nil {
+		log.Println("failed to scan transaction id")
+	}
+
+	transaction, err := mtt.transaction.Get(entity.TransactionParam{
+		ID: transactionId,
+	})
+	if err != nil {
+		log.Println("failed to get transaction id")
+	} else {
+		_, err := mtt.notification.Create(entity.Notification{
+			UserID:      transaction.UserID,
+			Description: "Bookingan kamu <b>sedang diproses</b>",
+			Status:      entity.ProcessingStatus,
+			IsRead:      false,
+		})
+		if err != nil {
+			log.Println("failed to create processing notification")
+		}
+		_, err = mtt.notification.Create(entity.Notification{
+			UserID:      transaction.UserID,
+			Description: fmt.Sprintf("Booking Office dengan No Pesanan <b>#%d</b> Berhasil", transaction.ID),
+			Status:      entity.SuccessStatus,
+			IsRead:      false,
+		})
+		if err != nil {
+			log.Println("failed to create processing notification")
+		}
 	}
 
 	return nil

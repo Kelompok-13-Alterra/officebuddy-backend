@@ -36,7 +36,7 @@ func (t *notification) Create(notification entity.Notification) (entity.Notifica
 func (t *notification) GetList(param entity.NotificationParam) ([]entity.Notification, error) {
 	notification := []entity.Notification{}
 
-	if err := t.db.Where(param).Find(&notification).Error; err != nil {
+	if err := t.db.Where(param).Order(param.OrderBy).Find(&notification).Error; err != nil {
 		return notification, err
 	}
 

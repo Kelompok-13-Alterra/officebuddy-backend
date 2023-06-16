@@ -37,7 +37,8 @@ func (n *notification) GetList(ctx context.Context) ([]entity.Notification, erro
 	}
 
 	notifications, err = n.notification.GetList(entity.NotificationParam{
-		UserID: user.User.ID,
+		UserID:  user.User.ID,
+		OrderBy: "id desc",
 	})
 
 	if err != nil {
