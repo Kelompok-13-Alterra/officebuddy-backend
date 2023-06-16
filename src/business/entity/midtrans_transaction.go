@@ -35,6 +35,7 @@ type MidtransTransactionPaymentDetail struct {
 	PaymentType string      `json:"payment_type"`
 	PaymentData PaymentData `json:"payment_data"`
 	Status      string      `json:"status"`
+	Office      Office      `json:"office"`
 }
 
 type MidtransTransactionParam struct {
