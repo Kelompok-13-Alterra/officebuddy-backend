@@ -11,6 +11,7 @@ type Interface interface {
 	GetList(param entity.NotificationParam) ([]entity.Notification, error)
 	Get(param entity.NotificationParam) (entity.Notification, error)
 	Delete(param entity.NotificationParam) error
+	Update(selectParam entity.NotificationParam, updateParam entity.UpdateNotificationParam) error
 }
 
 type notification struct {
@@ -55,6 +56,14 @@ func (t *notification) Get(param entity.NotificationParam) (entity.Notification,
 
 func (t *notification) Delete(param entity.NotificationParam) error {
 	if err := t.db.Where(param).Delete(&entity.Notification{}).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (t *notification) Update(selectParam entity.NotificationParam, updateParam entity.UpdateNotificationParam) error {
+	if err := t.db.Model(entity.Office{}).Where(selectParam).Updates(updateParam).Error; err != nil {
 		return err
 	}
 
