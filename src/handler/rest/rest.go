@@ -173,6 +173,7 @@ func (r *rest) Register() {
 
 	notification := v1.Group("/notification")
 	notification.GET("", r.VerifyUser, r.GetNotificationList)
+	notification.PUT("/mark-as-read", r.VerifyUser, r.MarkAsRead)
 
 	midtransTransaction := v1.Group("/midtrans-transaction")
 	midtransTransaction.POST("/handle", r.HandleNotification)

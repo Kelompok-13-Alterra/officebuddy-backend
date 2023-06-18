@@ -25,3 +25,7 @@ type NotificationParam struct {
 	OfficeID uint
 	OrderBy  string `gorm:"-"`
 }
+
+type UpdateNotificationParam struct {
+	IsRead	bool
+}
