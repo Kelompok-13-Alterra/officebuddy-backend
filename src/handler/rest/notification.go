@@ -28,11 +28,11 @@ func (r *rest) GetNotificationList(ctx *gin.Context) {
 }
 
 func (r *rest) MarkAsRead(ctx *gin.Context) {
-	notification, err := r.uc.Notification.MarkAsRead(ctx.Request.Context())
+	err := r.uc.Notification.MarkAsRead(ctx.Request.Context())
 	if err != nil {
 		r.httpRespError(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
-	r.httpRespSuccess(ctx, http.StatusCreated, "successfully Mark As Read list", notification)
+	r.httpRespSuccess(ctx, http.StatusCreated, "successfully Mark As Read list", err)
 }
