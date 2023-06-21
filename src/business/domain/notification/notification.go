@@ -63,7 +63,7 @@ func (t *notification) Delete(param entity.NotificationParam) error {
 }
 
 func (t *notification) Update(selectParam entity.NotificationParam, updateParam entity.UpdateNotificationParam) error {
-	if err := t.db.Model(entity.Office{}).Where(selectParam).Updates(updateParam).Error; err != nil {
+	if err := t.db.Model(entity.Notification{}).Where(selectParam).Updates(updateParam).Error; err != nil {
 		return err
 	}
 

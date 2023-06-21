@@ -1,8 +1,10 @@
 package office
 
 import (
+	"context"
 	"fmt"
 	"go-clean/src/business/entity"
+	"go-clean/src/lib/cloud_storage"
 
 	"gorm.io/gorm"
 )
@@ -10,6 +12,7 @@ import (
 type Interface interface {
 	Create(office entity.Office) (entity.Office, error)
 	GetList(param entity.OfficeParam) ([]entity.Office, error)
+	GetPresignedURL(ctx context.Context, filename string) (string, error)
 	GetListByLike(param entity.OfficeParam) ([]entity.Office, error)
 	GetListByID(officeIDs []uint) ([]entity.Office, error)
 	Get(param entity.OfficeParam) (entity.Office, error)
@@ -19,12 +22,14 @@ type Interface interface {
 }
 
 type office struct {
-	db *gorm.DB
+	db           *gorm.DB
+	cloudStorage cloud_storage.Interface
 }
 
-func Init(db *gorm.DB) Interface {
+func Init(db *gorm.DB, cs cloud_storage.Interface) Interface {
 	o := &office{
-		db: db,
+		db:           db,
+		cloudStorage: cs,
 	}
 
 	return o
@@ -46,6 +51,15 @@ func (o *office) GetList(param entity.OfficeParam) ([]entity.Office, error) {
 	}
 
 	return offices, nil
+}
+
+func (o *office) GetPresignedURL(ctx context.Context, filename string) (string, error) {
+	url, err := o.cloudStorage.GetSignedURL(ctx, filename, "office-image/")
+	if err != nil {
+		return url, err
+	}
+
+	return url, nil
 }
 
 func (o *office) GetListByLike(param entity.OfficeParam) ([]entity.Office, error) {

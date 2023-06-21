@@ -27,6 +27,17 @@ func (r *rest) GetNotificationList(ctx *gin.Context) {
 	r.httpRespSuccess(ctx, http.StatusCreated, "successfully get notification list", notification)
 }
 
+// @Summary Mark As Read Notification
+// @Description Mark As Read by User Logged In
+// @Security BearerAuth
+// @Tags Notification
+// @Produce json
+// @Success 200 {object} entity.Response{}
+// @Failure 400 {object} entity.Response{}
+// @Failure 401 {object} entity.Response{}
+// @Failure 404 {object} entity.Response{}
+// @Failure 500 {object} entity.Response{}
+// @Router /api/v1/notification/mark-as-read [PUT]
 func (r *rest) MarkAsRead(ctx *gin.Context) {
 	err := r.uc.Notification.MarkAsRead(ctx.Request.Context())
 	if err != nil {
@@ -34,5 +45,5 @@ func (r *rest) MarkAsRead(ctx *gin.Context) {
 		return
 	}
 
-	r.httpRespSuccess(ctx, http.StatusCreated, "successfully Mark As Read list", err)
+	r.httpRespSuccess(ctx, http.StatusCreated, "successfully Mark As Read list", nil)
 }

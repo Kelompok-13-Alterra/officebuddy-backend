@@ -24,6 +24,7 @@ type Office struct {
 	Price       int
 	Location    string
 	Facilities  string
+	ImageUrl    string
 }
 
 type OfficeHours struct {
@@ -94,4 +95,5 @@ type UpdateOfficeParam struct {
 	Location    string
 	Price       int
 	Facilities  string
+	ImageUrl    string
 }

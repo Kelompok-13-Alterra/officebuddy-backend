@@ -9,7 +9,7 @@ import (
 
 type Interface interface {
 	GetList(ctx context.Context) ([]entity.Notification, error)
-	MarkAsRead(ctx context.Context) (error)
+	MarkAsRead(ctx context.Context) error
 }
 
 type notification struct {
@@ -49,10 +49,11 @@ func (n *notification) GetList(ctx context.Context) ([]entity.Notification, erro
 	return notifications, nil
 }
 
-func (u *notification) MarkAsRead(ctx context.Context) (error) {
+func (u *notification) MarkAsRead(ctx context.Context) error {
 	var (
-		err   error
+		err error
 	)
+
 	user, err := u.auth.GetUserAuthInfo(ctx)
 	if err != nil {
 		return err
@@ -60,10 +61,12 @@ func (u *notification) MarkAsRead(ctx context.Context) (error) {
 
 	if err := u.notification.Update(entity.NotificationParam{
 		UserID: user.User.ID,
+		IsRead: false,
 	}, entity.UpdateNotificationParam{
-		IsRead : true,
-	}); err != nil{
+		IsRead: true,
+	}); err != nil {
 		return err
 	}
+
 	return nil
 }

@@ -1,32 +1,40 @@
 package office
 
 import (
+	"context"
+	"fmt"
 	officeDom "go-clean/src/business/domain/office"
 	"go-clean/src/business/entity"
+	"go-clean/src/lib/cloud_storage"
+	"log"
+	"mime/multipart"
 	"time"
 )
 
 type Interface interface {
-	Create(param entity.CreateOfficeParam) (entity.Office, error)
-	GetList(param entity.OfficeParam) ([]entity.Office, error)
-	Get(param entity.OfficeParam) (entity.Office, error)
+	Create(ctx context.Context, param entity.CreateOfficeParam) (entity.Office, error)
+	UploadImage(ctx context.Context, blobFile multipart.File, param entity.OfficeParam) error
+	GetList(ctx context.Context, param entity.OfficeParam) ([]entity.Office, error)
+	Get(ctx context.Context, param entity.OfficeParam) (entity.Office, error)
 	Update(param entity.OfficeParam, inputParam entity.UpdateOfficeParam) error
 	Delete(param entity.OfficeParam) error
 }
 
 type office struct {
-	office officeDom.Interface
+	office       officeDom.Interface
+	cloudStorage cloud_storage.Interface
 }
 
-func Init(od officeDom.Interface) Interface {
+func Init(od officeDom.Interface, cs cloud_storage.Interface) Interface {
 	o := &office{
-		office: od,
+		office:       od,
+		cloudStorage: cs,
 	}
 
 	return o
 }
 
-func (o *office) Create(param entity.CreateOfficeParam) (entity.Office, error) {
+func (o *office) Create(ctx context.Context, param entity.CreateOfficeParam) (entity.Office, error) {
 	office := entity.Office{}
 
 	openTime, err := o.convertStringToOfficeHours(param.Open)
@@ -57,6 +65,23 @@ func (o *office) Create(param entity.CreateOfficeParam) (entity.Office, error) {
 	return office, nil
 }
 
+func (o *office) UploadImage(ctx context.Context, blobFile multipart.File, param entity.OfficeParam) error {
+	fileName := fmt.Sprintf("%d-image-%d", param.ID, time.Now().Unix())
+	if err := o.cloudStorage.UploadFile(ctx, blobFile, fileName, "office-image/"); err != nil {
+		return err
+	}
+
+	if err := o.office.Update(entity.OfficeParam{
+		ID: param.ID,
+	}, entity.UpdateOfficeParam{
+		ImageUrl: fileName,
+	}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (o *office) convertStringToOfficeHours(s string) (entity.OfficeHours, error) {
 	t, err := time.Parse("15:04:05", s)
 	if err != nil {
@@ -65,7 +90,7 @@ func (o *office) convertStringToOfficeHours(s string) (entity.OfficeHours, error
 	return entity.OfficeHours{Time: t}, nil
 }
 
-func (o *office) GetList(param entity.OfficeParam) ([]entity.Office, error) {
+func (o *office) GetList(ctx context.Context, param entity.OfficeParam) ([]entity.Office, error) {
 	var (
 		offices []entity.Office
 		err     error
@@ -81,13 +106,32 @@ func (o *office) GetList(param entity.OfficeParam) ([]entity.Office, error) {
 		return offices, err
 	}
 
+	for i, of := range offices {
+		if of.ImageUrl == "" {
+			continue
+		}
+		url, err := o.office.GetPresignedURL(ctx, of.ImageUrl)
+		if err != nil {
+			log.Println(err)
+		}
+		offices[i].ImageUrl = url
+	}
+
 	return offices, nil
 }
 
-func (o *office) Get(param entity.OfficeParam) (entity.Office, error) {
+func (o *office) Get(ctx context.Context, param entity.OfficeParam) (entity.Office, error) {
 	office, err := o.office.Get(param)
 	if err != nil {
 		return office, err
+	}
+
+	if office.ImageUrl != "" {
+		url, err := o.office.GetPresignedURL(ctx, office.ImageUrl)
+		if err != nil {
+			log.Println(err)
+		}
+		office.ImageUrl = url
 	}
 
 	return office, nil

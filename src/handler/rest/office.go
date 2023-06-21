@@ -15,6 +15,8 @@ import (
 // @Produce json
 // @Param office body entity.CreateOfficeParam true "office info"
 // @Param type query string true "type" Enums(office, coworking)
+// @Param office_image formData file true "office_image"
+// @Accept multipart/form-data
 // @Success 200 {object} entity.Response{data=entity.Office{}}
 // @Failure 400 {object} entity.Response{}
 // @Failure 401 {object} entity.Response{}
@@ -23,7 +25,7 @@ import (
 // @Router /api/v1/office [POST]
 func (r *rest) CreateOffice(ctx *gin.Context) {
 	var inputParam entity.CreateOfficeParam
-	if err := ctx.ShouldBindJSON(&inputParam); err != nil {
+	if err := ctx.ShouldBind(&inputParam); err != nil {
 		r.httpRespError(ctx, http.StatusBadRequest, err)
 		return
 	}
@@ -36,13 +38,54 @@ func (r *rest) CreateOffice(ctx *gin.Context) {
 
 	inputParam.Type = typeParam.Type
 
-	office, err := r.uc.Office.Create(inputParam)
+	office, err := r.uc.Office.Create(ctx.Request.Context(), inputParam)
 	if err != nil {
 		r.httpRespError(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
 	r.httpRespSuccess(ctx, http.StatusCreated, "successfully create new office", office)
+}
+
+// @Summary Upload Office Image
+// @Description Upload Office Image
+// @Security BearerAuth
+// @Tags Office
+// @Produce json
+// @Param office_id path integer true "office id"
+// @Param office_image formData file true "office_image"
+// @Accept multipart/form-data
+// @Success 200 {object} entity.Response{}
+// @Failure 400 {object} entity.Response{}
+// @Failure 401 {object} entity.Response{}
+// @Failure 404 {object} entity.Response{}
+// @Failure 500 {object} entity.Response{}
+// @Router /api/v1/office/{office_id}/upload-image [POST]
+func (r *rest) UploadOfficeImage(ctx *gin.Context) {
+	var param entity.OfficeParam
+	if err := ctx.ShouldBindUri(&param); err != nil {
+		r.httpRespError(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	f, err := ctx.FormFile("office_image")
+	if err != nil {
+		r.httpRespError(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	blobFile, err := f.Open()
+	if err != nil {
+		r.httpRespError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	if err := r.uc.Office.UploadImage(ctx.Request.Context(), blobFile, param); err != nil {
+		r.httpRespError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	r.httpRespSuccess(ctx, http.StatusCreated, "successfully upload office image", nil)
 }
 
 // @Summary Get Office List
@@ -65,7 +108,7 @@ func (r *rest) GetOfficeList(ctx *gin.Context) {
 		return
 	}
 
-	office, err := r.uc.Office.GetList(officeParam)
+	office, err := r.uc.Office.GetList(ctx.Request.Context(), officeParam)
 	if err != nil {
 		r.httpRespError(ctx, http.StatusInternalServerError, err)
 		return
@@ -93,7 +136,7 @@ func (r *rest) GetOffice(ctx *gin.Context) {
 		return
 	}
 
-	office, err := r.uc.Office.Get(param)
+	office, err := r.uc.Office.Get(ctx.Request.Context(), param)
 	if err != nil {
 		r.httpRespError(ctx, http.StatusInternalServerError, err)
 		return
