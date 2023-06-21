@@ -95,7 +95,7 @@ func (o *user) Update(selectParam entity.UserParam, updateParam entity.UpdateUse
 }
 
 func (t *user) Delete(param entity.UserParam) error {
-	if err := t.db.Where(param).Delete(&entity.UserParam{}).Error; err != nil {
+	if err := t.db.Where(param).Delete(&entity.User{}).Error; err != nil {
 		return err
 	}
 
