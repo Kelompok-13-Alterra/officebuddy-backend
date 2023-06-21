@@ -10,6 +10,7 @@ import (
 	"go-clean/src/business/usecase/user"
 	"go-clean/src/business/usecase/widget_analytic"
 	"go-clean/src/lib/auth"
+	"go-clean/src/lib/cloud_storage"
 )
 
 type Usecase struct {
@@ -22,10 +23,10 @@ type Usecase struct {
 	WidgetDashboard     widget_analytic.Interface
 }
 
-func Init(auth auth.Interface, d *domain.Domains) *Usecase {
+func Init(auth auth.Interface, d *domain.Domains, cs cloud_storage.Interface) *Usecase {
 	uc := &Usecase{
 		User:                user.Init(d.User, auth, d.Notification),
-		Office:              office.Init(d.Office),
+		Office:              office.Init(d.Office, cs),
 		Transaction:         transaction.Init(d.Transaction, auth, d.Office, d.Midtrans, d.MidtransTransaction, d.User),
 		Notification:        notification.Init(d.Notification, auth),
 		Rating:              rating.Init(d.Rating, d.Transaction, auth),

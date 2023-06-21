@@ -156,6 +156,7 @@ func (r *rest) Register() {
 
 	office := v1.Group("/office")
 	office.POST("", r.VerifyUser, r.VerifyAdmin, r.CreateOffice)
+	office.POST("/:office_id/upload-image", r.VerifyUser, r.VerifyAdmin, r.UploadOfficeImage)
 	office.GET("", r.VerifyUser, r.GetOfficeList)
 	office.GET("/:office_id", r.VerifyUser, r.GetOffice)
 	office.PUT("/:office_id", r.VerifyUser, r.VerifyAdmin, r.UpdateOffice)

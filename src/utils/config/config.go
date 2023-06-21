@@ -1,16 +1,18 @@
 package config
 
 import (
+	"go-clean/src/lib/cloud_storage"
 	"go-clean/src/lib/midtrans"
 	"go-clean/src/lib/sql"
 	"time"
 )
 
 type Application struct {
-	Meta     ApplicationMeta
-	Gin      GinConfig
-	SQL      sql.Config
-	Midtrans midtrans.Config
+	Meta          ApplicationMeta
+	Gin           GinConfig
+	SQL           sql.Config
+	Midtrans      midtrans.Config
+	GoogleStorage cloud_storage.Config
 }
 
 type ApplicationMeta struct {

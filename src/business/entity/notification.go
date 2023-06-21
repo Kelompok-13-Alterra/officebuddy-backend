@@ -23,9 +23,10 @@ type NotificationParam struct {
 	ID       uint
 	UserID   uint
 	OfficeID uint
+	IsRead   bool
 	OrderBy  string `gorm:"-"`
 }
 
 type UpdateNotificationParam struct {
-	IsRead	bool
+	IsRead bool
 }

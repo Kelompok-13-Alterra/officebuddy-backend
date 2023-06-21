@@ -9,6 +9,7 @@ import (
 	"go-clean/src/business/domain/rating"
 	"go-clean/src/business/domain/transaction"
 	"go-clean/src/business/domain/user"
+	"go-clean/src/lib/cloud_storage"
 	midtransSdk "go-clean/src/lib/midtrans"
 
 	"gorm.io/gorm"
@@ -25,10 +26,10 @@ type Domains struct {
 	Midtrans            midtrans.Interface
 }
 
-func Init(db *gorm.DB, m midtransSdk.Interface) *Domains {
+func Init(db *gorm.DB, m midtransSdk.Interface, cs cloud_storage.Interface) *Domains {
 	d := &Domains{
 		User:                user.Init(db),
-		Office:              office.Init(db),
+		Office:              office.Init(db, cs),
 		Transaction:         transaction.Init(db),
 		Notification:        notification.Init(db),
 		Rating:              rating.Init(db),
