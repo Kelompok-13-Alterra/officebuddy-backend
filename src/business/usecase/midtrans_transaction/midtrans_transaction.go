@@ -1,6 +1,7 @@
 package midtrans_transaction
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -14,7 +15,7 @@ import (
 )
 
 type Interface interface {
-	GetPaymentDetail(param entity.MidtransTransactionParam) (entity.MidtransTransactionPaymentDetail, error)
+	GetPaymentDetail(ctx context.Context, param entity.MidtransTransactionParam) (entity.MidtransTransactionPaymentDetail, error)
 	HandleNotification(payload map[string]interface{}) error
 }
 
@@ -38,7 +39,7 @@ func Init(td transactionDom.Interface, od officeDom.Interface, mtd midtransTrans
 	return mtt
 }
 
-func (mtt *midtransTransaction) GetPaymentDetail(param entity.MidtransTransactionParam) (entity.MidtransTransactionPaymentDetail, error) {
+func (mtt *midtransTransaction) GetPaymentDetail(ctx context.Context, param entity.MidtransTransactionParam) (entity.MidtransTransactionPaymentDetail, error) {
 	result := entity.MidtransTransactionPaymentDetail{}
 
 	midtransTransaction, err := mtt.midtransTransaction.Get(param)
@@ -65,6 +66,14 @@ func (mtt *midtransTransaction) GetPaymentDetail(param entity.MidtransTransactio
 	result.PaymentData = paymentData
 	result.PaymentType = midtransTransaction.PaymentType
 	result.Office = office
+
+	if result.Office.ImageUrl != "" {
+		url, err := mtt.office.GetPresignedURL(ctx, result.Office.ImageUrl)
+		if err != nil {
+			log.Println(err)
+		}
+		result.Office.ImageUrl = url
+	}
 
 	return result, nil
 }

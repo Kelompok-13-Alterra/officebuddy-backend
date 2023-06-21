@@ -14,6 +14,7 @@ import (
 	"go-clean/src/lib/auth"
 	"go-clean/src/lib/midtrans"
 	"go-clean/src/lib/timeutils"
+	"log"
 	"strconv"
 	"time"
 
@@ -255,6 +256,13 @@ func (t *transaction) GetListBooked(ctx context.Context) ([]entity.Transaction, 
 
 	officesMap := make(map[uint]entity.Office)
 	for _, o := range offices {
+		if o.ImageUrl != "" {
+			url, err := t.office.GetPresignedURL(ctx, o.ImageUrl)
+			if err != nil {
+				log.Println(err)
+			}
+			o.ImageUrl = url
+		}
 		officesMap[o.ID] = o
 	}
 
@@ -300,6 +308,13 @@ func (t *transaction) GetListHistoryBooked(ctx context.Context) ([]entity.Transa
 
 	officesMap := make(map[uint]entity.Office)
 	for _, o := range offices {
+		if o.ImageUrl != "" {
+			url, err := t.office.GetPresignedURL(ctx, o.ImageUrl)
+			if err != nil {
+				log.Println(err)
+			}
+			o.ImageUrl = url
+		}
 		officesMap[o.ID] = o
 	}
 
