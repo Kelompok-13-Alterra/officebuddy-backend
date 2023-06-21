@@ -27,7 +27,7 @@ func (r *rest) GetPaymentDetail(ctx *gin.Context) {
 		return
 	}
 
-	result, err := r.uc.MidtransTransaction.GetPaymentDetail(param)
+	result, err := r.uc.MidtransTransaction.GetPaymentDetail(ctx.Request.Context(), param)
 	if err != nil {
 		r.httpRespError(ctx, http.StatusInternalServerError, err)
 		return
