@@ -8,16 +8,17 @@ import (
 
 type Transaction struct {
 	gorm.Model
-	UserID     uint
-	OfficeID   uint
-	Discount   int
-	Price      int
-	Tax        int
-	TotalPrice int
-	Start      time.Time
-	End        time.Time
-	Status     bool
-	Office     Office `gorm:"-:all"`
+	UserID        uint
+	OfficeID      uint
+	Discount      int
+	Price         int
+	Tax           int
+	TotalPrice    int
+	Start         time.Time
+	End           time.Time
+	Status        bool
+	PaymentStatus string `gorm:"-:all"`
+	Office        Office `gorm:"-:all"`
 }
 
 type TransactionParam struct {

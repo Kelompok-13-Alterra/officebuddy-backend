@@ -214,6 +214,11 @@ func (t *transaction) GetTransactionList(param entity.TransactionParam) ([]entit
 
 	transactions, err = t.transaction.GetList(entity.TransactionParam{})
 
+	for i, trans := range transactions {
+		midtransTransactions, _ := t.midtransTransaction.Get(entity.MidtransTransactionParam{TransactionID: trans.ID})
+		transactions[i].PaymentStatus = midtransTransactions.Status
+	}
+
 	if err != nil {
 		return transactions, err
 	}
