@@ -229,6 +229,7 @@ func (t *transaction) GetTransactionList(param entity.TransactionParam) ([]entit
 func (t *transaction) GetListBooked(ctx context.Context) ([]entity.Transaction, error) {
 	var (
 		transactions []entity.Transaction
+		result       []entity.Transaction
 		err          error
 	)
 
@@ -244,8 +245,29 @@ func (t *transaction) GetListBooked(ctx context.Context) ([]entity.Transaction, 
 		return transactions, err
 	}
 
-	mapOfficeIDs := make(map[uint]bool)
+	transactionIDs := []uint{}
 	for _, t := range transactions {
+		transactionIDs = append(transactionIDs, t.ID)
+	}
+
+	midtransTransactions, err := t.midtransTransaction.GetListByTrxID(transactionIDs)
+	if err != nil {
+		return transactions, err
+	}
+
+	midtransTransactionMap := make(map[uint]entity.MidtransTransaction)
+	for _, mt := range midtransTransactions {
+		midtransTransactionMap[mt.TransactionID] = mt
+	}
+
+	for _, t := range transactions {
+		if midtransTransactionMap[t.ID].Status == entity.StatusSuccess {
+			result = append(result, t)
+		}
+	}
+
+	mapOfficeIDs := make(map[uint]bool)
+	for _, t := range result {
 		mapOfficeIDs[t.OfficeID] = true
 	}
 
@@ -256,7 +278,7 @@ func (t *transaction) GetListBooked(ctx context.Context) ([]entity.Transaction, 
 
 	offices, err := t.office.GetListByID(officeIDs)
 	if err != nil {
-		return transactions, err
+		return result, err
 	}
 
 	officesMap := make(map[uint]entity.Office)
@@ -271,11 +293,11 @@ func (t *transaction) GetListBooked(ctx context.Context) ([]entity.Transaction, 
 		officesMap[o.ID] = o
 	}
 
-	for i, t := range transactions {
-		transactions[i].Office = officesMap[t.OfficeID]
+	for i, t := range result {
+		result[i].Office = officesMap[t.OfficeID]
 	}
 
-	return transactions, nil
+	return result, nil
 }
 
 func (t *transaction) GetListHistoryBooked(ctx context.Context) ([]entity.Transaction, error) {

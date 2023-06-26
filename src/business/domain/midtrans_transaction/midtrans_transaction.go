@@ -11,6 +11,7 @@ import (
 type Interface interface {
 	Create(transaction entity.MidtransTransaction) (entity.MidtransTransaction, error)
 	GetList(param entity.MidtransTransactionParam) ([]entity.MidtransTransaction, error)
+	GetListByTrxID(transactionIDs []uint) ([]entity.MidtransTransaction, error)
 	Get(param entity.MidtransTransactionParam) (entity.MidtransTransaction, error)
 	Update(selectParam entity.MidtransTransactionParam, updateParam entity.UpdateMidtransTransactionParam) error
 	Delete(param entity.MidtransTransactionParam) error
@@ -42,6 +43,15 @@ func (t *transaction) GetList(param entity.MidtransTransactionParam) ([]entity.M
 	transactions := []entity.MidtransTransaction{}
 
 	if err := t.db.Where(param).Find(&transactions).Error; err != nil {
+		return transactions, err
+	}
+
+	return transactions, nil
+}
+
+func (t *transaction) GetListByTrxID(transactionIDs []uint) ([]entity.MidtransTransaction, error) {
+	transactions := []entity.MidtransTransaction{}
+	if err := t.db.Where("transaction_id IN ?", transactionIDs).Find(&transactions).Error; err != nil {
 		return transactions, err
 	}
 
